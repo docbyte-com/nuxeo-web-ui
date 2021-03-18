@@ -1,4 +1,4 @@
-import { Given, Then, When } from 'cucumber';
+import { Given, Then, When } from '@cucumber/cucumber';
 
 Then('I can see the {string} search panel', function(name) {
   this.ui.drawer._search(name).waitForVisible();

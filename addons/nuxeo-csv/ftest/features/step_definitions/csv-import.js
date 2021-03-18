@@ -1,4 +1,4 @@
-import { When } from 'cucumber';
+import { When } from '@cucumber/cucumber';
 
 When(/^I go to the (.+) tab$/, function(name) {
   const dialog = this.ui.createDialog;

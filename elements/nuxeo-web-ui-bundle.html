@@ -126,7 +126,11 @@
 </nuxeo-slot-content>
 <nuxeo-slot-content name="analyticsDocumentDistributionPage" slot="ANALYTICS_PAGES" order="10">
   <template>
-    <nuxeo-distribution-analytics name="document-distribution" path="/default-domain/"></nuxeo-distribution-analytics>
+    <nuxeo-distribution-analytics
+      name="document-distribution"
+      path="/default-domain/"
+      enable-threshold="150"
+    ></nuxeo-distribution-analytics>
   </template>
 </nuxeo-slot-content>
 

@@ -177,6 +177,7 @@ Polymer({
               data="[[aggregations.dc_modified_agg]]"
               value="{{column.filterValue}}"
               multiple
+              aria-label$="[[i18n('documentContentView.datatable.header.modified')]]"
             >
             </nuxeo-dropdown-aggregation>
           </template>
@@ -197,6 +198,7 @@ Polymer({
               data="[[aggregations.dc_last_contributor_agg]]"
               value="{{column.filterValue}}"
               multiple
+              aria-label$="[[i18n('documentContentView.datatable.header.lastContributor')]]"
             >
             </nuxeo-dropdown-aggregation>
           </template>
@@ -238,7 +240,10 @@ Polymer({
           hidden
         >
           <template>
-            <nuxeo-user-tag user="[[item.properties.dc:creator]]"></nuxeo-user-tag>
+            <nuxeo-user-tag
+              user="[[item.properties.dc:creator]]"
+              aria-label$="[[item.properties.dc:creator]]"
+            ></nuxeo-user-tag>
           </template>
         </nuxeo-data-table-column>
         <nuxeo-data-table-column

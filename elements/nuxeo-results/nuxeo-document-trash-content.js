@@ -184,6 +184,7 @@ Polymer({
               data="[[aggregations.dc_modified_agg]]"
               value="{{column.filterValue}}"
               multiple
+              aria-label$="[[i18n('documentContentView.datatable.header.modified')]]"
             >
             </nuxeo-dropdown-aggregation>
           </template>
@@ -204,6 +205,7 @@ Polymer({
               data="[[aggregations.dc_last_contributor_agg]]"
               value="{{column.filterValue}}"
               multiple
+              aria-label$="[[i18n('documentContentView.datatable.header.lastContributor')]]"
             >
             </nuxeo-dropdown-aggregation>
           </template>

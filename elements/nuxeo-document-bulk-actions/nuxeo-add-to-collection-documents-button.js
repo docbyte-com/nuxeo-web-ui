@@ -79,6 +79,7 @@ Polymer({
           selection-formatter="[[resultAndSelectionFormatter]]"
           new-entry-formatter="[[newEntryFormatter]]"
           required
+          aria-label$="[[i18n('addToCollectionDocumentsButton.dialog.collections')]]"
         >
         </nuxeo-selectivity>
         <nuxeo-textarea

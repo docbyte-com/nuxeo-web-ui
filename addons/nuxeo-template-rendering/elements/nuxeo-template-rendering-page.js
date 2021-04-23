@@ -53,6 +53,7 @@ Polymer({
               min-chars="0"
               multiple
               readonly
+              aria-label$="[[i18n('templateRenderingPage.validDocTypes')]]"
             ></nuxeo-selectivity>
           </div>
 
@@ -88,6 +89,7 @@ Polymer({
               value="{{editedDocument.properties.tmpl:applicableTypes}}"
               min-chars="0"
               multiple
+              aria-label$="[[i18n('templateRenderingPage.validDocTypes')]]"
             ></nuxeo-selectivity>
             <label>[[i18n('templateRenderingPage.parametersOverride')]]</label>
             <paper-checkbox checked="{{editedDocument.properties.tmpl:allowOverride}}"></paper-checkbox>

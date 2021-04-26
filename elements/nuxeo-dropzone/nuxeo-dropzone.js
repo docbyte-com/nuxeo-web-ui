@@ -22,6 +22,7 @@ import '@polymer/paper-progress/paper-progress.js';
 import '@nuxeo/nuxeo-elements/nuxeo-connection.js';
 import '@nuxeo/nuxeo-elements/nuxeo-document.js';
 import '@nuxeo/nuxeo-elements/nuxeo-operation.js';
+import { config } from '@nuxeo/nuxeo-elements/config.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-icons.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-slots.js';
 import { createNestedObject } from '@nuxeo/nuxeo-elements/utils.js';
@@ -369,9 +370,7 @@ Polymer({
       value() {
         return {
           document: ['preview'],
-          blob: (Nuxeo.UI && Nuxeo.UI.config && Nuxeo.UI.config.enrichers && Nuxeo.UI.config.enrichers.blob) || [
-            'appLinks',
-          ],
+          blob: config.get('enrichers.blob') || ['appLinks'],
         };
       },
     },

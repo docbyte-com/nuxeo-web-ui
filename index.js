@@ -1,6 +1,8 @@
 // load app
 import './elements/nuxeo-app.js';
 
+import { config } from '@nuxeo/nuxeo-elements/config.js';
+
 // expose moment for compat
 import moment from '@nuxeo/moment';
 // expose page for compat
@@ -91,7 +93,7 @@ Promise.all(
     }
   })
   .then(async () => {
-    if (Nuxeo.UI.config.router && Nuxeo.UI.config.router.htmlImport) {
+    if (config.get('router.htmlImport')) {
       importHref(Nuxeo.UI.app.resolveUrl('routing.html'));
     } else {
       return import(/* webpackMode: "eager" */ './elements/routing.js');

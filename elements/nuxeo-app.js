@@ -1356,7 +1356,7 @@ prom.then(() => {
         'translate-directoryEntry': 'label',
       };
 
-      const fetch = config.get('fetch') || {};
+      const fetch = config.get('fetch', {});
 
       // add required fetchers
       const required = { document: ['lock'], directoryEntry: ['parent'], task: ['actors'] };

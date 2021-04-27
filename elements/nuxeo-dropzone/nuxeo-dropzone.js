@@ -370,7 +370,7 @@ Polymer({
       value() {
         return {
           document: ['preview'],
-          blob: config.get('enrichers.blob') || ['appLinks'],
+          blob: config.get('enrichers.blob', ['appLinks']),
         };
       },
     },

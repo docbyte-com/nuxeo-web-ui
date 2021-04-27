@@ -93,7 +93,7 @@ export const DocumentCreationBehavior = [
         'fetch-document': 'properties',
         'translate-directoryEntry': 'label',
       };
-      schemaFetcher.enrichers = config.get('enrichers') || {};
+      schemaFetcher.enrichers = config.get('enrichers', {});
       return schemaFetcher.get().then((doc) => {
         if (properties) {
           Object.keys(properties).forEach((prop) => {

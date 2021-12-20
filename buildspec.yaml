@@ -1,0 +1,46 @@
+version: 0.2
+env:
+  secrets-manager:
+    SONAR_USER: "SonarQubeUserSecretNew-wL3Hp9jD2h96:username"
+    SONAR_PASSWORD: "SonarQubeUserSecretNew-wL3Hp9jD2h96:password"
+    SONAR_ACCESS_TOKEN: "SonarQubeUserSecretNew-wL3Hp9jD2h96:access_token"
+  variables:
+    CHANGELIST: "-SNAPSHOT"
+    AWS_ACCOUNT_ID: "518241560725"
+    SONAR_HOST: "http://54.229.164.107:9000"
+    SONAR_PROJECT_KEY: "nuxeo-web-ui"
+
+
+phases:
+
+  install:
+    runtime-versions:
+      nodejs: 10
+    commands:
+      - aws s3 sync s3://db-dev-buildartifacts/tools/ tools/
+      - chmod a+x -R tools/
+      - . ./tools/prepEnv.sh
+      - echo Build Started
+
+  pre_build:
+    commands:
+      - REPOSITORY_URI=518241560725.dkr.ecr.eu-west-1.amazonaws.com/nuxeo-web-ui
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo Build started on `date`
+      - mvn clean install -DskipTests=true
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - echo Build finished on `date`
+
+  post_build:
+    commands:
+      - echo Deploying `date`
+      - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain artifacts-docbyte-com --domain-owner 518241560725 --query authorizationToken --output text`
+      #- mvn  -DskipTests=true  -e deploy
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Deployment done `date`

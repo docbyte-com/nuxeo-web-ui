@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.nuxeo.web.ui</groupId>
+    <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
     <artifactId>nuxeo-web-ui-parent</artifactId>
     <version>3.0.9-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
@@ -38,13 +38,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.nuxeo.web.ui</groupId>
+      <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
       <artifactId>nuxeo-web-ui-marketplace</artifactId>
       <type>zip</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.nuxeo.web.ui</groupId>
+      <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
       <artifactId>nuxeo-web-ui-marketplace-itests</artifactId>
       <type>zip</type>
       <scope>test</scope>

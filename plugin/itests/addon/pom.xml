@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.nuxeo.web.ui</groupId>
+    <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
     <artifactId>nuxeo-web-ui-parent</artifactId>
     <version>3.0.9-SNAPSHOT</version>
     <relativePath>../../../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.nuxeo.web.ui</groupId>
+  <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
   <artifactId>nuxeo-web-ui-itests</artifactId>
   <name>Nuxeo Web UI - Web Application Sample for Functional tests</name>
   <description>

@@ -3,10 +3,10 @@
   <parent>
     <groupId>org.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>2021.9</version>
+    <version>11.5.140</version>
   </parent>
 
-  <groupId>org.nuxeo.web.ui</groupId>
+  <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
   <artifactId>nuxeo-web-ui-parent</artifactId>
   <packaging>pom</packaging>
   <name>Nuxeo Web UI - Parent</name>
@@ -48,23 +48,34 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.nuxeo.web.ui</groupId>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-core</artifactId>
+        <version>1.27.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-api</artifactId>
+        <version>1.27.2</version>
+      </dependency>
+      <dependency>
+        <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.nuxeo.web.ui</groupId>
+        <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui-itests</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.nuxeo.web.ui</groupId>
+        <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui-marketplace</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
       </dependency>
       <dependency>
-        <groupId>org.nuxeo.web.ui</groupId>
+        <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui-marketplace-itests</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
@@ -72,55 +83,23 @@
     </dependencies>
   </dependencyManagement>
 
-  <repositories>
-    <repository>
-      <id>maven-public</id>
-      <url>https://packages.nuxeo.com/repository/maven-public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>maven-internal</id>
-      <url>https://packages.nuxeo.com/repository/maven-internal/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>public-snapshot</id>
-      <url>https://maven.nuxeo.org/nexus/content/groups/public-snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>maven-internal</id>
-      <url>https://packages.nuxeo.com/repository/maven-internal/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+  <distributionManagement>
+    <repository>
+      <id>artifacts-snapshot-docbyte-com-docbyte-mvn-snapshot</id>
+      <url>
+        https://artifacts-snapshot-docbyte-com-518241560725.d.codeartifact.eu-west-1.amazonaws.com/maven/docbyte-mvn-snapshot/
+      </url>
+    </repository>
+    <snapshotRepository>
+      <id>artifacts-snapshot-docbyte-com-docbyte-mvn-snapshot</id>
+      <url>
+        https://artifacts-snapshot-docbyte-com-518241560725.d.codeartifact.eu-west-1.amazonaws.com/maven/docbyte-mvn-snapshot/
+      </url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
 
   <scm>
     <connection>scm:git:git://github.com/nuxeo/plugin-nuxeo-web-ui.git</connection>

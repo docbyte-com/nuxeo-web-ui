@@ -14,8 +14,8 @@
     file:${out.dir}/nuxeo-csv-package-${nuxeo.platform.version}.zip"/>
   <target name="prepare-environment" depends="_init,prepare-db,prepare-tomcat">
     <copy todir="${out.dir}">
-      <artifact:file key="org.nuxeo.web.ui:nuxeo-web-ui-marketplace::zip" />
-      <artifact:file key="org.nuxeo.web.ui:nuxeo-web-ui-marketplace-itests::zip" />
+      <artifact:file key="cloud.docbyte.nuxeo.web.ui:nuxeo-web-ui-marketplace::zip" />
+      <artifact:file key="cloud.docbyte.nuxeo.web.ui:nuxeo-web-ui-marketplace-itests::zip" />
       <artifact:file key="org.nuxeo.packages:nuxeo-csv-package::zip" />
     </copy>
   </target>

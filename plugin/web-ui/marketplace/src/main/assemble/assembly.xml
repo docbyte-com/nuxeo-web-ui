@@ -18,7 +18,7 @@
     </copy>
 
     <copy todir="${outdir}/marketplace/install/bundles">
-      <artifact:file key="org.nuxeo.web.ui:nuxeo-web-ui" />
+      <artifact:file key="cloud.docbyte.nuxeo.web.ui:nuxeo-web-ui" />
     </copy>
 
     <nx:studioExtraction todir="${outdir}/marketplace">

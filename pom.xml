@@ -60,6 +60,7 @@
         <version>1.27.2</version>
       </dependency>
       <dependency>
+
         <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui</artifactId>
         <version>${project.version}</version>

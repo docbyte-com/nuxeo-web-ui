@@ -46,7 +46,7 @@ phases:
     commands:
       - echo Deploying `date`
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain artifacts-docbyte-com --domain-owner 518241560725 --query authorizationToken --output text`
-      #- mvn  -DskipTests=true  -e deploy
+      - mvn  -DskipTests=true  -e deploy
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG

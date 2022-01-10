@@ -36,17 +36,14 @@ phases:
       - cd ../..
       - mvn install -DskipInstall
       - cd server
-      - docker build -t nuxeo-web-ui/server
+      - docker build -t nuxeo-web-ui/server .
       - cd ..
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       - echo Build finished on `date`
-
-  post_build:
-    commands:
       - echo Deploying `date`
       - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain artifacts-docbyte-com --domain-owner 518241560725 --query authorizationToken --output text`
-      - mvn  -DskipTests=true  -e deploy
+      - mvn deploy -Dchangelist=$CHANGELIST -DskipTests
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG

@@ -827,3 +827,17 @@
     <nuxeo-spreadsheet-button nx-provider="[[nxProvider]]" columns="[[columns]]"></nuxeo-spreadsheet-button>
   </template>
 </nuxeo-slot-content>
+
+<!--CREATE DOCUMENT BUTTON-->
+<nuxeo-slot-content name="documentCreateButton" slot="CUSTOM_COMPONENTS" order="10">
+    <nuxeo-document-create-button
+            class$="[[page]]"
+            parent="[[currentParent]]"
+            hidden$="[[isMobile]]"
+    ></nuxeo-document-create-button>
+    <nuxeo-document-create-popup
+            id="importPopup"
+            parent="[[currentParent]]"
+            default-path="/"
+    ></nuxeo-document-create-popup>
+</nuxeo-slot-content>

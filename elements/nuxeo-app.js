@@ -425,7 +425,9 @@ Polymer({
                     ></nuxeo-search-page>
 
                     <nuxeo-tasks id="tasks-dashboard" name="tasks" current="[[currentTask]]"></nuxeo-tasks>
-
+                    
+                    <nuxeo-slot name="CUSTOM_PAGES" model="[[actionContext]]"></nuxeo-slot>
+                    
                     <nuxeo-admin
                             name="admin"
                             user="[[currentUser]]"
@@ -433,14 +435,7 @@ Polymer({
                             route-params="[[routeParams]]"
                             on-error="_onError"
                     ></nuxeo-admin>
-
-                    <nuxeo-archive-management
-                            name="archiveManagement"
-                            user="[[currentUser]]"
-                            selected="[[selectedArchiveManagementTab]]"
-                            route-params="[[routeParams]]"
-                            on-error="_onError"
-                    ></nuxeo-archive-management>
+                    
 
                     <nuxeo-profile name="profile" selected="[[selectedProfileTab]]"
                                    user="[[currentUser]]"></nuxeo-profile>
@@ -470,23 +465,7 @@ Polymer({
             </paper-header-panel>
         </paper-drawer-panel>
 
-        <nuxeo-filter
-                page="[[page]]"
-                currentParent="[[currentParent]]"
-                isMobile="isMobile"
-                facet="IngestRoot"
-        >
-            <nuxeo-document-create-button
-                    class$="[[page]]"
-                    parent="[[currentParent]]"
-                    hidden$="[[isMobile]]"
-            ></nuxeo-document-create-button>
-            <nuxeo-document-create-popup
-                    id="importPopup"
-                    parent="[[currentParent]]"
-                    default-path="/"
-            ></nuxeo-document-create-popup>
-        </nuxeo-filter>
+        <nuxeo-slot name="CUSTOM_COMPONENTS" model="[[actionContext]]"></nuxeo-slot>
 
         <nuxeo-progress-indicator visible="[[loading]]"></nuxeo-progress-indicator>
 

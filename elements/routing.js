@@ -32,11 +32,11 @@ page('*', scrollToTop, (ctx, next) => {
 });
 
 page('/', () => {
-  page.redirect('/home');
+  page.redirect('/browse/archive-domain/archive');
 });
 
 page('/home', () => {
-  app.show('home');
+  page.redirect('/browse/archive-domain/archive');
 });
 
 page('/browse', () => {
@@ -165,6 +165,10 @@ app.router = {
 
   administration(tab) {
     return `/admin/${tab}`;
+  },
+
+  archiveManagement(tab) {
+    return `/archiveManagement/${tab}`;
   },
 
   user(name) {

@@ -28,7 +28,7 @@ import { PaperItemBehavior } from '@polymer/paper-item/paper-item-behavior.js';
 /**
 `nuxeo-menu-icon`
 @group Nuxeo UI
-@element nuxeo-menu-icon
+@element nuxeo- menu-icon
 */
 Polymer({
   _template: html`

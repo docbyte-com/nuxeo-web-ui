@@ -3,7 +3,7 @@
   <parent>
     <groupId>cloud.docbyte.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>2021.1.13-SNAPSHOT</version>
+    <version>2022.1.13-SNAPSHOT</version>
   </parent>
 
   <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
@@ -90,7 +90,7 @@
     <repository>
       <id>artifacts-snapshot-docbyte-com-docbyte-mvn-snapshot</id>
       <url>
-        https://artifacts-snapshot-docbyte-com-518241560725.d.codeartifact.eu-west-1.amazonaws.com/maven/docbyte-mvn-snapshot/
+        https://artifacts-beta-docbyte-com-518241560725.d.codeartifact.eu-west-1.amazonaws.com/maven/docbyte-mvn-beta/
       </url>
     </repository>
     <snapshotRepository>

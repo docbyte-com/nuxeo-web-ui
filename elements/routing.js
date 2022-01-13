@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import page from '@nuxeo/page/page.mjs';
+import config from "../config/config.js";
 
 const { app } = Nuxeo.UI;
 
@@ -32,11 +33,11 @@ page('*', scrollToTop, (ctx, next) => {
 });
 
 page('/', () => {
-  page.redirect('/home');
+  page.redirect(config.HomePage);
 });
 
 page('/home', () => {
-  app.show('home');
+  page.redirect(config.HomePage);
 });
 
 page('/browse', () => {
@@ -165,6 +166,10 @@ app.router = {
 
   administration(tab) {
     return `/admin/${tab}`;
+  },
+
+  archiveManagement(tab) {
+    return `/archiveManagement/${tab}`;
   },
 
   user(name) {

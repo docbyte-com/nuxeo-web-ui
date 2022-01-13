@@ -163,7 +163,7 @@ Polymer({
   },
 
   toggleDialogCreate(type) {
-    this.selectedTab = 'create';
+    this.selectedTab = 'import';
     this._showTabs = false;
     this._fetchParent().then(() => {
       if (this._noPermission) {
@@ -177,7 +177,7 @@ Polymer({
   },
 
   toggleDialogImport(files) {
-    this.selectedTab = 'import';
+    this.selectedTab = ''import'';
     this._fetchParent().then(() => {
       if (this._noPermission) {
         this.notify({ message: this.i18n('documentCreationBehavior.error.noPermission') });
@@ -232,7 +232,7 @@ Polymer({
   _openedChanged() {
     if (this.opened) {
       if (this.selectedTab === '') {
-        this.selectedTab = 'create';
+        this.selectedTab = 'import';
       }
     } else {
       this.selectedTab = '';

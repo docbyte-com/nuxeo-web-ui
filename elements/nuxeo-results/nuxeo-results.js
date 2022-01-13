@@ -192,9 +192,9 @@ Polymer({
 
             <div class="resultActions" hidden$="[[hideContentViewActions]]">
                 <div class="commonActions">
-          <span class="resultsCount" hidden$="[[!_showResultsCount(nxProvider, resultsCount)]]"
-          >[[i18n('results.heading.count', resultsCount)]]</span
-          >
+          <span class="resultsCount" hidden$="[[!_showResultsCount(nxProvider, resultsCount)]]">
+              [[_resultsCountLabel]]
+          </span>
                     <template is="dom-if" if="[[_displayQuickFilters(displayQuickFilters, view)]]">
                         <nuxeo-quick-filters
                                 quick-filters="{{quickFilters}}"
@@ -209,16 +209,16 @@ Polymer({
 
                         <div class="viewModes">
                             <template is="dom-if" if="[[_multipleDisplayModes]]">
-                                <template is="dom-repeat" items="[[_displayModes]]">
-                                    <paper-icon-button
-                                            class="displayMode"
-                                            icon="[[item.icon]]"
-                                            title$="[[_displayModeTitle(item, i18n)]]"
-                                            selected$="[[_isCurrentDisplayMode(item, displayMode)]]"
-                                            disabled$="[[_isCurrentDisplayMode(item, displayMode)]]"
-                                            on-tap="_toggleDisplayMode"
-                                    >
-                                    </paper-icon-button>
+                            <template is="dom-repeat" items="[[_displayModes]]">
+                                <paper-icon-button
+                                        class="displayMode"
+                                        icon="[[item.icon]]"
+                                        title$="[[_displayModeTitle(item, i18n)]]"
+                                        selected$="[[_isCurrentDisplayMode(item, displayMode)]]"
+                                        disabled$="[[_isCurrentDisplayMode(item, displayMode)]]"
+                                        on-tap="_toggleDisplayMode"
+                                >
+                                </paper-icon-button>
                                 </template>
                             </template>
                         </div>
@@ -367,6 +367,11 @@ Polymer({
             type: Number,
         },
 
+        _resultsCountLabel: {
+            type: String,
+            computed: '_computeCountLabel(resultsCount)',
+        },
+
         /**
          * `true` if results are being loaded.
          */
@@ -443,6 +448,12 @@ Polymer({
     _displaySort() {
         // XXX check previous view properties for compatibility
         return this.view && !this.view.handlesSorting && (this.view.hasAttribute('display-sort') || this.displaySort);
+    },
+
+    _computeCountLabel() {
+        return this.resultsCount < 0
+            ? this.i18n('results.heading.count.unknown')
+            : this.i18n('results.heading.count', this.resultsCount);
     },
 
     _sortOptions() {

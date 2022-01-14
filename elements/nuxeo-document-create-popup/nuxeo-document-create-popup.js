@@ -177,7 +177,7 @@ Polymer({
   },
 
   toggleDialogImport(files) {
-    this.selectedTab = ''import'';
+    this.selectedTab = 'import';
     this._fetchParent().then(() => {
       if (this._noPermission) {
         this.notify({ message: this.i18n('documentCreationBehavior.error.noPermission') });

@@ -16,7 +16,7 @@
     <copy todir="${out.dir}">
       <artifact:file key="cloud.docbyte.nuxeo.web.ui:nuxeo-web-ui-marketplace::zip" />
       <artifact:file key="cloud.docbyte.nuxeo.web.ui:nuxeo-web-ui-marketplace-itests::zip" />
-      <artifact:file key="org.nuxeo.packages:nuxeo-csv-package::zip" />
+      <artifact:file key="cloud.docbyte.nuxeo.packages:nuxeo-csv-package::zip" />
     </copy>
   </target>
 

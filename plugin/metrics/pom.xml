@@ -15,7 +15,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.nuxeo.ecm.distribution</groupId>
+      <groupId>cloud.docbyte.nuxeo.ecm.distribution</groupId>
       <artifactId>nuxeo-server-tomcat</artifactId>
       <type>zip</type>
       <scope>provided</scope>

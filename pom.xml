@@ -16,6 +16,7 @@
   <properties>
     <nuxeo.skip.enforcer>true</nuxeo.skip.enforcer>
     <nuxeo.target.version>2021.*</nuxeo.target.version>
+    <nuxeo.platform.version>2022.1.13-SNAPSHOT</nuxeo.platform.version>
   </properties>
 
   <modules>

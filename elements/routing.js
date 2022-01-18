@@ -169,6 +169,8 @@ app.router = {
   },
 
   archiveManagement(tab) {
+    console.log("archivemanagement")
+    console.log(tab)
     return `/archiveManagement/${tab}`;
   },
 

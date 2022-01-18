@@ -184,7 +184,7 @@ Polymer({
                 margin-top: auto;
             }
 
-            #menu > .settingsItem {
+            #menu > .settings ~ .settings {
                 margin: 0;
                 order: 1;
             }
@@ -341,24 +341,24 @@ Polymer({
                         aria-label$="[[i18n('app.drawer')]]"
                 >
                     <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>
-                    <div class="settings">
+
+                    <template is="dom-if" if="[[hasAdministrationPermissions(currentUser)]]">
                         <nuxeo-menu-icon
                                 name="administration"
                                 icon="nuxeo:admin"
                                 label="app.administration"
-                                class="settingsItem"
-                                hidden$="[[!hasAdministrationPermissions(currentUser)]]"
+                                class="settings"
                         >
                         </nuxeo-menu-icon>
-                        <nuxeo-menu-icon
-                                name="profile"
-                                src="[[currentUser.contextParameters.userprofile.avatar.data]]"
-                                icon="nuxeo:user-settings"
-                                label="app.account"
-                                class="settingsItem"
-                        >
-                        </nuxeo-menu-icon>
-                    </div>
+                    </template>
+                    <nuxeo-menu-icon
+                            name="profile"
+                            src="[[currentUser.contextParameters.userprofile.avatar.data]]"
+                            icon="nuxeo:user-settings"
+                            label="app.account"
+                            class="settings"
+                    >
+                    </nuxeo-menu-icon>
                 </paper-listbox>
 
                 <!-- drawer -->
@@ -425,7 +425,7 @@ Polymer({
                     ></nuxeo-search-page>
 
                     <nuxeo-tasks id="tasks-dashboard" name="tasks" current="[[currentTask]]"></nuxeo-tasks>
-                    
+
                     <nuxeo-slot name="CUSTOM_PAGES" model="[[actionContext]]"></nuxeo-slot>
                     
                     <nuxeo-admin
@@ -981,6 +981,7 @@ Polymer({
     },
 
     _toggleDrawer(e) {
+        console.log(e)
         if (e.detail.selected && this._selected === e.detail.selected && this.drawerOpened) {
             this._closeDrawer();
         } else {

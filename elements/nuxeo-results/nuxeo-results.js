@@ -740,9 +740,6 @@ Polymer({
     },
 
     _multipleDisplayModes() {
-        console.log("viewmodes")
-        console.log(this._displayModes)
-        console.log(this._displayModes.length > 1)
         return this._displayModes.length > 1;
     }
 });

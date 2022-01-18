@@ -125,6 +125,10 @@ export default class UI extends BasePage {
     return new Administration('nuxeo-admin');
   }
 
+  get archiveManagement() {
+    return new ArchiveManagement('archive-management');
+  }
+
   get userCloudServices() {
     return new UserCloudServices('nuxeo-user-cloud-services');
   }

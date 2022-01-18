@@ -208,17 +208,17 @@ Polymer({
                         </slot>
 
                         <div class="viewModes">
-                            <template is="dom-if" if="[[_multipleDisplayModes]]">
-                            <template is="dom-repeat" items="[[_displayModes]]">
-                                <paper-icon-button
-                                        class="displayMode"
-                                        icon="[[item.icon]]"
-                                        title$="[[_displayModeTitle(item, i18n)]]"
-                                        selected$="[[_isCurrentDisplayMode(item, displayMode)]]"
-                                        disabled$="[[_isCurrentDisplayMode(item, displayMode)]]"
-                                        on-tap="_toggleDisplayMode"
-                                >
-                                </paper-icon-button>
+                            <template is="dom-if" if="[[_multipleDisplayModes(_displayModes)]]">
+                                <template is="dom-repeat" items="[[_displayModes]]">
+                                    <paper-icon-button
+                                            class="displayMode"
+                                            icon="[[item.icon]]"
+                                            title$="[[_displayModeTitle(item, i18n)]]"
+                                            selected$="[[_isCurrentDisplayMode(item, displayMode)]]"
+                                            disabled$="[[_isCurrentDisplayMode(item, displayMode)]]"
+                                            on-tap="_toggleDisplayMode"
+                                    >
+                                    </paper-icon-button>
                                 </template>
                             </template>
                         </div>
@@ -739,7 +739,7 @@ Polymer({
         }
     },
 
-    _multipleDisplayModes(){
+    _multipleDisplayModes() {
         console.log("viewmodes")
         console.log(this._displayModes)
         console.log(this._displayModes.length > 1)

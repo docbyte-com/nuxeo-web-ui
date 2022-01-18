@@ -425,8 +425,6 @@ Polymer({
                     ></nuxeo-search-page>
 
                     <nuxeo-tasks id="tasks-dashboard" name="tasks" current="[[currentTask]]"></nuxeo-tasks>
-
-                    <nuxeo-slot name="CUSTOM_PAGES" model="[[actionContext]]"></nuxeo-slot>
                     
                     <nuxeo-admin
                             name="admin"

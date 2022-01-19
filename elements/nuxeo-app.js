@@ -596,7 +596,6 @@ Polymer({
 
     listeners: {
         'document-updated': 'refresh',
-        'create-document': '_showDocumentCreationWizard',
         'document-created': '_handleDocumentCreated',
         workflowStarted: '_refreshAndFetchTasks',
         workflowAbandoned: '_refreshAndFetchTasks',

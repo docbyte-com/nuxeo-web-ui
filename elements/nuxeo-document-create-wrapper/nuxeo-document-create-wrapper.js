@@ -42,7 +42,7 @@ Polymer({
         <nuxeo-document-create-popup
                 id="importPopup"
                 parent="[[currentParent]]"
-                default-path="/"
+                default-path="[[defaultPath]]"
         ></nuxeo-document-create-popup>
   `,
 
@@ -53,6 +53,7 @@ Polymer({
         page: Object,
         currentParent: Object,
         isMobile: Object,
+        defaultPath: String,
     },
 
     listeners: {

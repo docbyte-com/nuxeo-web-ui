@@ -206,7 +206,7 @@ import './nuxeo-results/nuxeo-document-trash-content.js';
 import './nuxeo-selection/nuxeo-selection-toolbar.js';
 import './nuxeo-data-grid/nuxeo-document-grid-thumbnail.js';
 import './nuxeo-data-list/nuxeo-document-list-item.js';
-import './nuxeo-document-create/nuxeo-document-create.js';
+import './nuxeo-document-create-wrapper/nuxeo-document-create-wrapper.js';
 import './nuxeo-document-create-button/nuxeo-document-create-button.js';
 import './nuxeo-document-create-popup/nuxeo-document-create-popup.js';
 import './nuxeo-document-create-actions/nuxeo-document-create-shortcut.js';

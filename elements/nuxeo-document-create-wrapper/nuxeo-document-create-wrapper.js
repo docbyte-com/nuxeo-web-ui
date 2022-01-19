@@ -28,9 +28,9 @@ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
 /**
- `nuxeo-document-create`
+ `nuxeo-document-create-wrapper`
  @group Nuxeo UI
- @element nuxeo-document-create
+ @element nuxeo-document-create-wrapper
  */
 Polymer({
     _template: html`
@@ -46,7 +46,7 @@ Polymer({
         ></nuxeo-document-create-popup>
   `,
 
-    is: 'nuxeo-document-create',
+    is: 'nuxeo-document-create-wrapper',
     behaviors: [I18nBehavior],
 
     properties: {

@@ -911,19 +911,6 @@ Polymer({
         this.$.suggester.toggle();
     },
 
-    _showDocumentCreationWizard(e) {
-        if (e.detail.keyboardEvent) {
-            e.detail.keyboardEvent.preventDefault();
-        }
-        if (e.detail.files) {
-            this.$.importPopup.toggleDialogImport(e.detail.files);
-        } else if (e.detail.type) {
-            this.$.importPopup.toggleDialogCreate(e.detail.type);
-        } else {
-            this.$.importPopup.toggleDialog();
-        }
-    },
-
     _navigate(e) {
         if (e.detail.doc) {
             this.navigateTo(e.detail.doc, e.detail.docAction);

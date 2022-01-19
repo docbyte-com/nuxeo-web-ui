@@ -833,15 +833,10 @@
 <!--CREATE DOCUMENT BUTTON-->
 <nuxeo-slot-content name="documentCreateButton" slot="CUSTOM_COMPONENTS" order="10">
     <template>
-        <nuxeo-document-create-button
-                class$="[[page]]"
-                parent="[[currentParent]]"
-                hidden$="[[isMobile]]"
-        ></nuxeo-document-create-button>
-        <nuxeo-document-create-popup
-                id="importPopup"
-                parent="[[currentParent]]"
-                default-path="/"
-        ></nuxeo-document-create-popup>
+        <nuxeo-document-create
+                page="[[page]]"
+                currentParent="[[currentParent]]"
+                isMobile="[[isMobile]]"
+        ></nuxeo-document-create>
     </template>
 </nuxeo-slot-content>

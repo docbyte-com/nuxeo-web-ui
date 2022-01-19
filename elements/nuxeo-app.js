@@ -889,6 +889,9 @@ Polymer({
             actionContext: this.actionContext,
             userWorkspace: this.userWorkspace,
             routeParams: this.routeParams,
+            page: this.page,
+            currentParent: this.currentParent,
+            isMobile: this.isMobile
         };
     },
 
@@ -979,9 +982,10 @@ Polymer({
     },
 
     _toggleDrawer(e) {
-        console.log(e)
-        //If the item has a link defined, don't open the drawer, just navigate to the link
-        if(e.detail.item.__data.link && e.detail.item.__data.link.length > 0){
+        //If the item has a link defined, close the drawer (and navigate to the link)
+        if(e.detail.item.__data && e.detail.item.__data.link && e.detail.item.__data.link.length > 0){
+            this._selected = this.selectedTab = e.detail.selected;
+            this._closeDrawer();
             return;
         }
         if (e.detail.selected && this._selected === e.detail.selected && this.drawerOpened) {

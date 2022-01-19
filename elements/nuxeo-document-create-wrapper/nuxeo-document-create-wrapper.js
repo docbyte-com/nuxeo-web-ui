@@ -55,6 +55,10 @@ Polymer({
         isMobile: Object,
     },
 
+    listeners: {
+        'create-document': '_showDocumentCreationWizard',
+    },
+
     _showDocumentCreationWizard(e) {
         if (e.detail.keyboardEvent) {
             e.detail.keyboardEvent.preventDefault();

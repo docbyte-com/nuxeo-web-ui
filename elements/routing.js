@@ -87,6 +87,23 @@ page('/admin/:tab?', (data) => {
   });
 });
 
+page('/archiveManagement/:tab?', (data) => {
+  // prevent currentUser from being undefined
+  app.$.nxcon.connect().then(() => {
+    // block access to admin center to archive management users
+    const hasPermission =
+        app.currentUser.extendedGroups.find((grp) => grp.name === 'archivemanagers');
+    if (hasPermission) {
+      if (data.params.tab) {
+        app.selectedArchiveManagementTab = data.params.tab;
+      }
+      app.show('archiveManagement');
+    } else {
+      app.showError(404, '', data.path);
+    }
+  });
+});
+
 page('/admin/user-group-management/:type/:id(.*)', (data) => {
   app.selectedAdminTab = 'user-group-management';
   app.show('admin', [data.params.type, data.params.id]);

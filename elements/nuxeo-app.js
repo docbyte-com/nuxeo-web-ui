@@ -136,9 +136,14 @@ Polymer({
                     z-index: 2;
                 }
             }
+            
+            #drawer-wrapper {
+                background-color: var(--nuxeo-app-header-background);
+                width: var(--nuxeo-sidebar-width);
+            }
 
             /* logo */
-            #logo {
+            #logo-wrapper {
                 position: fixed;
                 width: var(--nuxeo-sidebar-width);
                 height: 53px;
@@ -148,11 +153,14 @@ Polymer({
                 box-sizing: border-box;
                 outline: none;
                 background-color: var(--nuxeo-sidebar-background);
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             #logo img {
-                width: var(--nuxeo-sidebar-width);
-                height: 53px;
+                max-width: var(--nuxeo-sidebar-width);
+                max-height: 53px;
             }
 
             /* menu */
@@ -170,7 +178,7 @@ Polymer({
             }
 
             #logo:hover img {
-                background: rgba(0, 0, 0, 0.2);
+                /*background: rgba(0, 0, 0, 0.2);*/
                 color: var(--nuxeo-sidebar-menu-hover);
             }
 
@@ -325,11 +333,13 @@ Polymer({
                 responsive-width="720px"
                 edge-swipe-sensitivity="0"
         >
-            <div slot="drawer">
+            <div slot="drawer" id="drawer-wrapper">
                 <!-- logo -->
-                <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
-                    <img src$="[[_logo(baseUrl)]]" alt="[[i18n('accessibility.logo')]]"/>
-                </a>
+                <div id="logo-wrapper">
+                    <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
+                        <img src$="[[_logo(baseUrl)]]" alt="[[i18n('accessibility.logo')]]"/>
+                    </a>                    
+                </div>
 
                 <!-- menu -->
                 <paper-listbox

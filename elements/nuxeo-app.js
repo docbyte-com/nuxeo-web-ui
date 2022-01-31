@@ -137,7 +137,7 @@ Polymer({
                 }
             }
             
-            #drawer-wrapper {
+            #menu-wrapper {
                 background-color: var(--nuxeo-app-header-background);
                 width: var(--nuxeo-sidebar-width);
             }
@@ -161,6 +161,7 @@ Polymer({
             #logo img {
                 max-width: var(--nuxeo-sidebar-width);
                 max-height: 53px;
+                padding: 0.1rem;
             }
 
             /* menu */
@@ -333,7 +334,7 @@ Polymer({
                 responsive-width="720px"
                 edge-swipe-sensitivity="0"
         >
-            <div slot="drawer" id="drawer-wrapper">
+            <div slot="drawer">
                 <!-- logo -->
                 <div id="logo-wrapper">
                     <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
@@ -349,6 +350,7 @@ Polymer({
                         selected-class="selected"
                         on-iron-activate="_toggleDrawer"
                         aria-label$="[[i18n('app.drawer')]]"
+                        id="menu-wrapper"
                 >
                     <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>
 

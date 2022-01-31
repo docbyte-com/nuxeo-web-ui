@@ -163,7 +163,8 @@ Polymer({
         box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
         @apply --layout-horizontal;
         @apply --layout-center;
-        background-color: var(--nuxeo-search-form-header-color);
+        background-color: var(--nuxeo-search-form-header-background-color);
+        color: var(--nuxeo-search-form-header-color);
       }
 
       .header h1 {

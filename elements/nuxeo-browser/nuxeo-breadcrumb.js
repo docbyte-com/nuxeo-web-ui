@@ -120,9 +120,11 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
         <nuxeo-connection id="nxcon" url="{{url}}"></nuxeo-connection>
 
         <div class="breadcrumb">
-          <div class="current-icon" aria-hidden="true">
-            <iron-icon src="[[_icon(document, url)]]"></iron-icon>
-          </div>
+          <template is="dom-if" if="_hasIcon(document, url)">
+            <div class="current-icon" aria-hidden="true">
+              <iron-icon src="[[_icon(document, url)]]"></iron-icon>
+            </div>
+          </template>
           <div class="doc-path">
             <a
               href$="[[urlFor(document)]]"
@@ -248,6 +250,10 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
       if (document) {
         return document.type === 'Root' ? this.i18n('browse.root') : document.title;
       }
+    }
+
+    _hasIcon(document, url){
+      return _icon(document, url) !== null && _icon(document, url) !== undefined && _icon(document, url) !== '';
     }
 
     _icon(document, url) {

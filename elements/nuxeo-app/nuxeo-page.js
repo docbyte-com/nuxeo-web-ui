@@ -59,8 +59,8 @@ Polymer({
 
       #tabs {
         flex: 0 0 auto;
-        background: var(--nuxeo-app-header-background);
-        box-shadow: var(--nuxeo-app-header-box-shadow);
+        background: var(--nuxeo-app-tabs-background);
+        box-shadow: var(--nuxeo-app-tabs-box-shadow);
         margin-top: 1px;
         overflow-x: auto;
         z-index: 1;

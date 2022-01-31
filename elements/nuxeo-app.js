@@ -156,12 +156,12 @@ Polymer({
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                padding: 0.1rem;
             }
 
             #logo img {
                 max-width: var(--nuxeo-sidebar-width);
                 max-height: 53px;
-                padding: 0.1rem;
             }
 
             /* menu */
@@ -471,7 +471,7 @@ Polymer({
                         hidden$="[[!isNarrow]]"
                         aria-label$="[[i18n('command.menu')]]"
                 ></paper-icon-button>
-                <nuxeo-suggester id="suggester"></nuxeo-suggester>
+<!--                <nuxeo-suggester id="suggester"></nuxeo-suggester>-->
             </paper-header-panel>
         </paper-drawer-panel>
 

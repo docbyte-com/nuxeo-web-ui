@@ -161,7 +161,7 @@ Polymer({
 
             #logo img {
                 max-width: var(--nuxeo-sidebar-width);
-                max-height: 53px;
+                max-height: 35px;
             }
 
             /* menu */

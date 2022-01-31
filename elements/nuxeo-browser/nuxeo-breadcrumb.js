@@ -68,7 +68,7 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
             width: 1.6rem;
             height: 1.5rem;
             margin: 0.3rem 0.5rem 0 0;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: var(--nuxeo-icon-background, rgba(255, 255, 255, 0.7));
             padding: 0.2em;
             border-radius: 2px;
           }

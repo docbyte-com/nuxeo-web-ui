@@ -40,7 +40,6 @@ Polymer({
       }
 
       :host(.selected) paper-icon-button {
-        background: rgba(0, 0, 0, 0.2);
         color: var(--nuxeo-sidebar-menu-hover);
       }
 
@@ -60,7 +59,6 @@ Polymer({
       }
 
       paper-icon-button:hover {
-        background: rgba(0, 0, 0, 0.2);
         color: var(--nuxeo-sidebar-menu-hover);
       }
     </style>

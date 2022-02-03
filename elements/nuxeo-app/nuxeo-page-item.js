@@ -36,6 +36,7 @@ Polymer({
         margin: 0 0 0 16px;
         padding: 12px 6px 12px 6px;
         border-bottom: 2px solid transparent;
+        font-weight: 700;
       }
 
       :host(:hover) {

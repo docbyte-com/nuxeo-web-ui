@@ -55,7 +55,7 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
           }
 
           .current {
-            font-weight: 400;
+            font-weight: 700;
             display: block;
             white-space: nowrap;
             text-overflow: ellipsis;

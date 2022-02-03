@@ -98,15 +98,15 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
 
           #ancestors a,
           #ellipsis {
-            @apply --nuxeo-link;
+            color: var(--nuxeo-breadcrumb-color, black);
+            text-decoration: none;
             opacity: 0.5;
             font-weight: 400;
             letter-spacing: 0.02rem;
-            text-decoration: none;
           }
 
           #ancestors a:hover {
-            color: var(--nuxeo-link-hover-color, #0066ff);
+            color: var(--nuxeo-breadcrumb-hover-color, #0066ff);
             opacity: 1;
           }
 

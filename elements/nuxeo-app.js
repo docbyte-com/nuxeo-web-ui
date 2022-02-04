@@ -506,10 +506,6 @@ Polymer({
     behaviors: [RoutingBehavior, FormatBehavior, FiltersBehavior],
     importMeta: import.meta,
     properties: {
-        productName: {
-            type: String,
-            value: customConfig.ProductName,
-        },
 
         baseUrl: {
             type: String,
@@ -873,7 +869,7 @@ Polymer({
             default:
                 title.push(this.i18n(`app.title.${this.page}`));
         }
-        title.push(this.productName);
+        title.push(customConfig.ProductName);
         document.title = title.join(' - ');
     },
 

@@ -44,6 +44,7 @@ Polymer({
         position: relative;
         overflow-y: auto;
         padding: 16px 16px 0 16px;
+        margin: 0 var(--nuxeo-body-side-margin);
       }
 
       .toolbar {
@@ -55,6 +56,8 @@ Polymer({
         background: var(--nuxeo-app-header-background);
         box-shadow: var(--nuxeo-app-header-box-shadow);
         overflow-x: auto;
+        padding-bottom: var(--nuxeo-header-overlap);
+        margin-bottom: calc(var(--nuxeo-header-overlap) * -1);
       }
 
       #tabs {
@@ -64,7 +67,12 @@ Polymer({
         margin-top: 1px;
         overflow-x: auto;
         z-index: 1;
+
+        margin: 0 var(--nuxeo-body-side-margin);
+        border-top-left-radius:  var(--nuxeo-body-top-corner-radius);
+        border-top-right-radius:  var(--nuxeo-body-top-corner-radius);
       }
+      
 
       #header::slotted(*) {
         overflow-x: hidden;

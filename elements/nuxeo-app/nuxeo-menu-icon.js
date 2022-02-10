@@ -53,7 +53,7 @@ Polymer({
 
       paper-icon-button {
         color: var(--nuxeo-sidebar-menu);
-        height: 48px;
+        height: var(--nuxeo-menu-icon-height);
         padding: 12px 13px;
         width: var(--nuxeo-sidebar-width);
       }

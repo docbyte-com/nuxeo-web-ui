@@ -62,6 +62,9 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
             overflow: hidden;
             color: var(--nuxeo-app-header, #fff);
             text-decoration: none;
+            text-transform: uppercase;
+            float: left;
+            
           }
 
           .current-icon iron-icon {

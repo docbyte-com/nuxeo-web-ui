@@ -222,16 +222,23 @@ const template = html`
             html {
                 --nuxeo-drawer-header-height: 53px;
                 --nuxeo-sidebar-width: 52px;
+                --nuxeo-sidebar-height: 35px;
 
                 --nuxeo-app-top: 0px;
                 --nuxeo-app-bottom: 0px;
                 --nuxeo-app-header-box-shadow: 1px 0 0 rgba(0, 0, 0, 0.1) inset, 0 3px 5px rgba(0, 0, 0, 0.1);
 
 
-                --nuxeo-header-overlap: 50px;
-                --nuxeo-body-side-margin: 10px;
-                --nuxeo-body-top-corner-radius: 5px;
+                --nuxeo-header-overlap: 0px;
+                --nuxeo-drawer-header-font-size: 1em;
+                --nuxeo-body-side-margin: 0px;
+                --nuxeo-body-top-corner-radius: 0px;
+                --nuxeo-menu-icon-height: 43px;
+                --nuxeo-header-icon-filter: none;
+                --nuxeo-sidebar-logo-height: 53px;
+                --nuxeo-sidebar-logo-img-height: 35px;
 
+                
                 --nuxeo-link: {
                     color: var(--nuxeo-link-color);
                     text-decoration: none;

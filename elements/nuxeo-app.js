@@ -147,7 +147,7 @@ Polymer({
             #logo-wrapper {
                 position: fixed;
                 width: var(--nuxeo-sidebar-width);
-                height: 53px;
+                height: var(--nuxeo-sidebar-logo-height);
                 top: var(--nuxeo-app-top);
                 left: 0;
                 z-index: 102;
@@ -158,11 +158,12 @@ Polymer({
                 justify-content: center;
                 align-items: center;
                 padding: 0.1rem;
+                
             }
 
             #logo img {
                 max-width: var(--nuxeo-sidebar-width);
-                max-height: 35px;
+                max-height: var(--nuxeo-sidebar-logo-img-height);
             }
 
             /* menu */
@@ -170,10 +171,10 @@ Polymer({
                 @apply --nuxeo-sidebar;
                 position: fixed;
                 width: var(--nuxeo-sidebar-width);
-                height: calc(100vh - 54px - (var(--nuxeo-app-top, 0) + var(--nuxeo-app-bottom, 0)));
+                height: calc(100vh - var(--nuxeo-sidebar-logo-height) - (var(--nuxeo-app-top, 0) + var(--nuxeo-app-bottom, 0)));
                 z-index: 100;
                 padding: 0;
-                padding-top: 54px;
+                padding-top: var(--nuxeo-sidebar-logo-height);
                 overflow: auto;
                 display: flex;
                 flex-direction: column;
@@ -1008,7 +1009,7 @@ Polymer({
     },
 
     _closeDrawer() {
-        this.drawerWidth = '52px';
+        this.drawerWidth = getComputedStyle(document.documentElement).getPropertyValue('--nuxeo-sidebar-width');
         this.drawerOpened = false;
         this.$.drawerPanel.closeDrawer();
     },

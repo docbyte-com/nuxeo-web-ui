@@ -45,6 +45,7 @@ Polymer({
         overflow-y: auto;
         padding: 16px 16px 0 16px;
         margin: 0 var(--nuxeo-body-side-margin);
+        background: var(--nuxeo-app-tabs-background);
       }
 
       .toolbar {
@@ -58,6 +59,12 @@ Polymer({
         overflow-x: auto;
         padding-bottom: var(--nuxeo-header-overlap);
         margin-bottom: calc(var(--nuxeo-header-overlap) * -1);
+        font-size: var(--nuxeo-drawer-header-font-size);
+        line-height: calc(var(--nuxeo-drawer-header-height) - var(--nuxeo-header-overlap));
+        
+      }
+      .toolbar .current-icon {
+        filter: var(--nuxeo-header-icon-filter);
       }
 
       #tabs {

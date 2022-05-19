@@ -40,24 +40,24 @@ limitations under the License.
 <html lang="">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="description" content=""/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
   <title><%= Framework.getProperty(Environment.PRODUCT_NAME) %></title>
 
   <!-- Chrome for Android theme color -->
-  <meta name="theme-color" content="#2E3AA1">
+  <meta name="theme-color" content="#2E3AA1"/>
 
   <!-- Web Application Manifest -->
-  <link rel="manifest" href="manifest.json" crossOrigin="use-credentials">
+  <link rel="manifest" href="manifest.json" crossOrigin="use-credentials"/>
 
   <!-- Tile color for Win8 -->
-  <meta name="msapplication-TileColor" content="#3372DF">
+  <meta name="msapplication-TileColor" content="#3372DF"/>
 
   <!-- Add to homescreen for Chrome on Android -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Nuxeo">
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="Nuxeo"/>
 
   <link rel="icon" sizes="32x32" href="images/touch/favicon-32x32.png" type="image/png">
   <link rel="icon" sizes="16x16" href="images/touch/favicon-16x16.png" type="image/png">
@@ -68,10 +68,10 @@ limitations under the License.
   <link rel="mask-icon" href="images/touch/safari-pinned-tab.svg" color="#0066ff">
 
   <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Nuxeo">
-  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="apple-mobile-web-app-title" content="Docbyte"/>
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png"/>
 
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">

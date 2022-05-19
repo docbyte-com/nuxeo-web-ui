@@ -578,7 +578,7 @@ Polymer({
             type: Object,
             computed:
                 '_actionContext(currentDocument, currentUser, currentTask, taskCount,' +
-                ' clipboard, clipboardDocCount, userWorkspace, routeParams)',
+                ' clipboard, clipboardDocCount, userWorkspace, routeParams, page, currentParent, isMobile)',
         },
 
         clipboard: {

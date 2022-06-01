@@ -1,0 +1,30 @@
+<dom-module id="custom-style">
+  <template>
+    <style>
+      .success-label,
+      .error-label,
+      .warning-label {
+        border-radius: 5px;
+        padding: 0.25rem 1rem;
+        height: 16px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .success-label {
+        background-color: var(--nuxeo-success-background-color);
+        color: var(--nuxeo-success-color);
+      }
+
+      .warning-label {
+        background-color: var(--nuxeo-warning-background-color);
+        color: var(--nuxeo-warning-color);
+      }
+
+      .error-label {
+        background-color: var(--nuxeo-error-background-color);
+        color: var(--nuxeo-error-color);
+      }
+    </style>
+  </template>
+</dom-module>

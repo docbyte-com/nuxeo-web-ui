@@ -1,23 +1,54 @@
-name: Build
+name: Main
 
 on:
   push:
     branches:
       - maintenance-3.0.x
-  pull_request:
-    branches:
-      - maintenance-3.0.x
 
+  # Manually trigger the workflow
+  workflow_dispatch:
+  
 jobs:
+  lint:
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/lint.yaml@maintenance-3.0.x
+    secrets:
+      NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
+
+  test:
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/test.yaml@maintenance-3.0.x
+    secrets:
+      NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+    with:
+      branch: maintenance-3.0.x
+
+  a11y:
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/a11y.yaml@maintenance-3.0.x
+    secrets:
+      NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
+      PACKAGES_AUTH_USER: ${{ secrets.PACKAGES_AUTH_USER }}
+      PACKAGES_AUTH_TOKEN: ${{ secrets.PACKAGES_AUTH_TOKEN }}
+    with:
+      branch: maintenance-3.0.x
+
+  ftest:
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/ftest.yaml@maintenance-3.0.x
+    secrets:
+      NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
+      PACKAGES_AUTH_USER: ${{ secrets.PACKAGES_AUTH_USER }}
+      PACKAGES_AUTH_TOKEN: ${{ secrets.PACKAGES_AUTH_TOKEN }}
+    with:
+      branch: maintenance-3.0.x
+
   build:
-    name: Packages
+    needs: [ lint, test, a11y, ftest ]
     runs-on: [ self-hosted, master ]
     steps:
     - uses: actions/checkout@v2
 
     - run: git config user.name "nuxeo-web-ui-jx-bot" && git config user.email "ui+jx-bot@nuxeo.com"
 
-    - uses: actions/setup-node@v1
+    - uses: actions/setup-node@v3
       with:
         registry-url: 'https://packages.nuxeo.com/repository/npm-public/'
         scope: '@nuxeo'
@@ -27,20 +58,13 @@ jobs:
         echo "BRANCH_NAME=${GITHUB_HEAD_REF##*/}" >> $GITHUB_ENV
         echo "PACKAGE_VERSION=$(npx -c 'echo "$npm_package_version"')" >> $GITHUB_ENV
 
-    - name: Get pull request version
-      if: github.event_name == 'pull_request'
-      run: |
-        echo "VERSION=$PACKAGE_VERSION-$BRANCH_NAME" >> $GITHUB_ENV
-
     - name: Get prerelease version
-      if: github.event_name == 'push'
       run: |
         git fetch origin --tags
         RC_VERSION=$(git tag --sort=taggerdate --list "v${PACKAGE_VERSION/-SNAPSHOT}*" | tail -1 | tr -d '\n')
         echo "VERSION=$(npx semver -i prerelease --preid rc ${RC_VERSION:-$PACKAGE_VERSION}  | tr -d '\n')" >> $GITHUB_ENV
 
     - name: Update versions
-      if: github.event_name == 'push'
       run: |
         find . -type f -not -path "./node_modules/*" -regex ".*\.\(yaml\|sample\|xml\)" -exec sed -i 's/'"$PACKAGE_VERSION"'/'"$VERSION"'/g' {} \;
 
@@ -63,15 +87,9 @@ jobs:
         pushd packages/nuxeo-web-ui-ftest
         npm install
         popd
-
-    - name: Lint
-      run: npm run lint
-
-    - name: Unit tests
-      env:
-        SAUCE_USERNAME: nuxeo-web-ui
-        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm run test
+        pushd packages/nuxeo-designer-catalog
+        npm install
+        popd
 
     - name: 'Update settings.xml with server configuration'
       run: |
@@ -86,32 +104,10 @@ jobs:
             </settings>' > ~/.m2/settings.xml
 
     - name: Nuxeo package build
-      run: mvn install -DskipInstall
-
-    - name: Functional tests
       run: |
-        mvn -B -nsu -f plugin/itests/addon install
-        mvn -B -nsu -f plugin/itests/marketplace install
-        mvn -B -nsu -f ftest install
-
-    - name: A11y checks
-      run: |
-        mvn -B -nsu -f plugin/a11y install
-
-    - name: Archive cucumber reports
-      uses: actions/upload-artifact@v2
-      with:
-        name: cucumber-reports
-        path: |
-          ftest/target/cucumber-reports/
-
-    - name: Archive logs
-      uses: actions/upload-artifact@v2
-      with:
-        name: logs
-        path: |
-          **/log/*.log
-          **/nxserver/config/distribution.properties
+        mvn -ntp install -DskipInstall
+        mvn -B -nsu -ntp -f plugin/itests/addon install
+        mvn -B -nsu -ntp -f plugin/itests/marketplace install
 
     - name: Archive packages
       uses: actions/upload-artifact@v2
@@ -122,7 +118,6 @@ jobs:
           plugin/itests/marketplace/target/nuxeo-web-ui-marketplace-itests-*.zip
 
     - name: Tag
-      if: github.event_name == 'push'
       run: |
         git add package-lock.json packages/nuxeo-web-ui-ftest/package-lock.json
         git commit -a -m "Release ${VERSION}"
@@ -130,15 +125,20 @@ jobs:
         git push origin v${VERSION}
 
     - name: Publish Nuxeo packages
-      if: github.event_name == 'push'
       env:
         CONNECT_PREPROD_URL: https://nos-preprod-connect.nuxeocloud.com/nuxeo
       run: |
         PACKAGE="plugin/web-ui/marketplace/target/nuxeo-web-ui-marketplace-${PADDED_VERSION}.zip"
-        curl -i -u "${{ secrets.CONNECT_PREPROD_AUTH }}" -F package=@$PACKAGE "$CONNECT_PREPROD_URL/site/marketplace/upload?batch=true"
+        STATUS_CODE=`curl -i --silent --output publish-req.output -w "%{http_code}" -u "${{ secrets.CONNECT_PREPROD_AUTH }}" -F package=@$PACKAGE "$CONNECT_PREPROD_URL/site/marketplace/upload?batch=true"`
+        cat publish-req.output
+        if [[ "$STATUS_CODE" != "200" ]]
+        then
+          exit 1
+        else
+          exit 0
+        fi
 
     - name: Publish Web UI FTest framework
-      if: github.event_name == 'push'
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: |

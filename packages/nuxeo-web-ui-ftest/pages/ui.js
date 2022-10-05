@@ -3,6 +3,7 @@ import CreateDialog from './ui/create_dialog';
 import Drawer from './ui/drawer';
 import Home from './ui/home';
 import Administration from './ui/administration';
+import ArchiveManagement from './ui/archiveManagement';
 import BasePage from './base';
 import ActivityFeed from './ui/activity_feed';
 import HistoryTable from './ui/history_table';
@@ -190,7 +191,7 @@ export default class UI extends BasePage {
     return snackBar.getText();
   }
 
-  get bulkEdit() {
-    return new BulkEdit('nuxeo-edit-documents-button');
+  bulkEdit(selector) {
+    return new BulkEdit(selector);
   }
 }

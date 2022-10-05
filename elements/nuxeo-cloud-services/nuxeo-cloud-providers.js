@@ -98,8 +98,8 @@ Polymer({
       </nuxeo-data-table>
     </nuxeo-card>
 
-    <nuxeo-dialog id="dialog" with-backdrop no-auto-focus>
-      <h2>[[i18n('cloudProviders.popup.editEntry')]]</h2>
+    <nuxeo-dialog id="dialog" with-backdrop>
+      <h2>[[_computeDialogHeading(_isNew)]]</h2>
       <iron-form id="form">
         <form>
           <nuxeo-input
@@ -291,5 +291,8 @@ Polymer({
         },
       );
     }
+  },
+  _computeDialogHeading() {
+    return this.i18n(this._isNew ? 'cloudProviders.popup.addEntry' : 'cloudProviders.popup.editEntry');
   },
 });

@@ -49,6 +49,7 @@ Polymer({
         height: var(--nuxeo-document-create-popup-height, 80vh);
         width: var(--nuxeo-document-create-popup-width, 65vw);
         margin: 0;
+        z-index: 200;
       }
 
       paper-tabs {
@@ -81,7 +82,7 @@ Polymer({
     <nuxeo-document id="defaultDoc" doc-path="[[parentPath]]" enrichers="permissions, subtypes" response="{{parent}}">
     </nuxeo-document>
 
-    <nuxeo-dialog id="createDocDialog" opened="{{opened}}" modal no-auto-focus>
+    <nuxeo-dialog id="createDocDialog" opened="{{opened}}" modal>
       <paper-tabs hidden$="[[!_showTabs]]" selected="{{selectedTab}}" attr-for-selected="name" noink>
         <nuxeo-slot name="CREATE_POPUP_ITEMS" model="[[importContext]]"></nuxeo-slot>
       </paper-tabs>

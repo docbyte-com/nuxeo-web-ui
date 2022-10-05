@@ -1,6 +1,6 @@
 {
   "name": "@nuxeo/nuxeo-web-ui-ftest",
-  "version": "3.0.10-SNAPSHOT",
+  "version": "3.0.16-SNAPSHOT",
   "bin": {
     "nuxeo-web-ui-ftest": "./bin/nuxeo-web-ui-ftest.js"
   },
@@ -19,8 +19,8 @@
     "@babel/register": "^7.14.5",
     "@cucumber/cucumber": "^7.0.0",
     "@cucumber/tag-expressions": "^2.0.4",
-    "@wdio/cli": "7.5.3",
-    "@wdio/cucumber-framework": "7.7.7",
+    "@wdio/cli": "^7.20.5",
+    "@wdio/cucumber-framework": "^7.20.3",
     "@wdio/local-runner": "^7.2.0",
     "@wdio/selenium-standalone-service": "^7.2.0",
     "@wdio/spec-reporter": "^7.2.0",

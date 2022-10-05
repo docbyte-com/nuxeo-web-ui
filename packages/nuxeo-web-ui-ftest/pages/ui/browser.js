@@ -9,7 +9,7 @@ import DocumentTask from './browser/document_task';
 import DocumentFormLayout from './browser/document_form_layout';
 import Selection from './selection';
 import Results from './results';
-import { url } from '../helpers';
+import { clickActionMenu, url } from '../helpers';
 
 export default class Browser extends BasePage {
   documentPage(docType) {
@@ -96,15 +96,15 @@ export default class Browser extends BasePage {
   }
 
   get header() {
-    return this.currentPage.element('nuxeo-data-table nuxeo-data-table-row[header]');
+    return this.currentPage.element('nuxeo-data-table[name="table"] nuxeo-data-table-row[header]');
   }
 
   get rows() {
-    return this.currentPage.elements('nuxeo-data-table nuxeo-data-table-row:not([header])');
+    return this.currentPage.elements('nuxeo-data-table[name="table"] nuxeo-data-table-row:not([header])');
   }
 
   waitForChildren() {
-    this.currentPage.waitForExist('nuxeo-data-table nuxeo-data-table-row nuxeo-data-table-checkbox');
+    this.currentPage.waitForExist('nuxeo-data-table[name="table"] nuxeo-data-table-row nuxeo-data-table-checkbox');
   }
 
   addToCollection(name) {
@@ -197,8 +197,8 @@ export default class Browser extends BasePage {
 
   waitForHasChild(doc) {
     const { el } = this;
-    el.waitForVisible('nuxeo-data-table nuxeo-data-table-row a.title');
-    const titles = el.elements('nuxeo-data-table nuxeo-data-table-row a.title');
+    el.waitForVisible('nuxeo-data-table[name="table"] nuxeo-data-table-row a.title');
+    const titles = el.elements('nuxeo-data-table[name="table"] nuxeo-data-table-row a.title');
     return titles.some((title) => title.getText().trim() === doc.title);
   }
 
@@ -236,14 +236,14 @@ export default class Browser extends BasePage {
   sortContent(field, order) {
     driver.waitUntil(() => {
       this.waitForChildren();
-      const columns = this.currentPage.elements('nuxeo-data-table nuxeo-data-table-column');
+      const columns = this.currentPage.elements('nuxeo-data-table[name="table"] nuxeo-data-table-column');
       const idx = columns
         .map((col) => browser.execute((el) => el.sortBy, col))
         .findIndex((colSortByField) => colSortByField && colSortByField.toLowerCase() === field.toLowerCase());
       if (idx === -1) {
         throw new Error('Field not found');
       }
-      const header = this.currentPage.element('nuxeo-data-table nuxeo-data-table-row[header]');
+      const header = this.currentPage.element('nuxeo-data-table[name="table"] nuxeo-data-table-row[header]');
       const sortElt = header.element(`nuxeo-data-table-cell:nth-of-type(${idx + 1}) nuxeo-data-table-column-sort`);
       const currentSorting = sortElt.element('paper-icon-button').getAttribute('direction');
       if (currentSorting && order.toLowerCase() === currentSorting.toLowerCase()) {
@@ -333,26 +333,12 @@ export default class Browser extends BasePage {
   }
 
   clickDocumentActionMenu(selector) {
-    const menu = this.el.element('nuxeo-actions-menu');
-    menu.waitForExist(selector);
-    const action = menu.element(selector);
-    action.waitForExist();
-    if (action.getAttribute('show-label') !== null) {
-      // if the element is inside the dropdown, we need to expand it
-      menu.click('#dropdownButton');
-      menu.waitForVisible('paper-listbox');
-      menu.waitForVisible('[slot="dropdown"] .label');
-      menu.waitForEnabled('[slot="dropdown"] .label');
-    }
-    action.waitForVisible('.action');
-    action.waitForEnabled('.action');
-    // let's make sure we're clicking on the div the has the click event handler
-    action.click('.action');
+    clickActionMenu(this.el.element('nuxeo-actions-menu'), selector);
   }
 
   startWorkflow(workflow) {
     // click the action to trigger the dialog
-    this.clickDocumentActionMenu('nuxeo-workflow-button');
+    clickActionMenu(this.el, 'nuxeo-workflow-button');
     // select the workflow
     const workflowSelect = this.el.element('.document-actions nuxeo-workflow-button nuxeo-select');
     workflowSelect.waitForVisible();
@@ -380,7 +366,7 @@ export default class Browser extends BasePage {
   }
 
   get publishDialog() {
-    this.clickDocumentActionMenu('nuxeo-publish-button');
+    clickActionMenu(this.el, 'nuxeo-publish-button');
     const publishDialog = new PublicationDialog('#publishDialog');
     publishDialog.waitForVisible();
     return publishDialog;

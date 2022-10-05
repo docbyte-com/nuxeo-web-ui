@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import page from '@nuxeo/page/page.mjs';
-import config from "../config/config.js";
+import config from '../config/config.js';
 
 const { app } = Nuxeo.UI;
 
@@ -91,8 +91,7 @@ page('/archiveManagement/:tab?', (data) => {
   // prevent currentUser from being undefined
   app.$.nxcon.connect().then(() => {
     // block access to admin center to archive management users
-    const hasPermission =
-        app.currentUser.extendedGroups.find((grp) => grp.name === 'archivemanagers');
+    const hasPermission = app.currentUser.extendedGroups.find((grp) => grp.name === 'archivemanagers');
     if (hasPermission) {
       if (data.params.tab) {
         app.selectedArchiveManagementTab = data.params.tab;
@@ -205,5 +204,15 @@ app.router = {
     return `/${name}`;
   },
 
-  navigate: page,
+  navigate: (path) => {
+    if (path == null) {
+      return;
+    }
+    const isFullpath = /^http(s)?:\/\//.test(path);
+    if (isFullpath) {
+      window.location = path;
+    } else {
+      page(path);
+    }
+  },
 };

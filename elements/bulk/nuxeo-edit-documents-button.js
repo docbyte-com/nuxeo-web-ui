@@ -29,6 +29,9 @@ import { pathFromUrl } from '@polymer/polymer/lib/utils/resolve-url.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import { isPageProviderDisplayBehavior } from '../select-all-helpers.js';
 import './nuxeo-bulk-widget.js';
+import { _fetchSchemas } from '../fetch-schemas.js';
+
+let schemas;
 
 /**
 `nuxeo-edit-documents-button`
@@ -91,7 +94,8 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
       <!-- inherit nuxeo-operation-button template -->
       ${super.template}
 
-      <nuxeo-dialog id="dialog" no-auto-focus with-backdrop modal>
+      <nuxeo-resource id="schema"></nuxeo-resource>
+      <nuxeo-dialog id="dialog" with-backdrop modal>
         <iron-form id="form">
           <form>
             <div class="scrollable">
@@ -187,11 +191,18 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
         type: String,
         readOnly: true,
       },
+
+      _fetchSchemas: {
+        type: Function,
+        value() {
+          return () => _fetchSchemas(this.$.schema);
+        },
+      },
     };
   }
 
   static get observers() {
-    return ['_loadLayout(documents.splices, layout, hrefFunction, hrefBase)'];
+    return ['_loadLayout(layout, hrefFunction, hrefBase)'];
   }
 
   constructor() {
@@ -201,6 +212,13 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
     this.operation = 'Document.Update';
     // set up a listener to act on changes of the update modes of the bulk widget wrappers in the layout
     this.addEventListener('update-mode-changed', (e) => this._updateBulkWidget(e.detail.bulkWidget));
+  }
+
+  ready() {
+    super.ready();
+    this._fetchSchemas().then((response) => {
+      schemas = response;
+    });
   }
 
   /**
@@ -226,9 +244,12 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
           // if the bulk widget is not tagged with a `boundPath`, it's safe to assume it has no value
           const value = el.boundPath ? bulkLayout.get(el.boundPath) : null;
           // check if trying to replace with empty value
-          const replacingWithEmptyValue = el.updateMode === 'replace' && this._isValueEmpty(value);
+          const replacingWithEmptyValue =
+            (el.updateMode === 'replace' || el.updateMode === 'addValues') && this._isValueEmpty(value);
           if (replacingWithEmptyValue) {
-            el._setError(this.i18n('bulkWidget.error.replaceWithEmpty'));
+            el._setError(
+              this.i18n(`bulkWidget.error.${el.updateMode === 'replace' ? 'replaceWithEmpty' : 'addValuesWithEmpty'}`),
+            );
           }
           valid = valid && !replacingWithEmptyValue;
         } else {
@@ -252,15 +273,18 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
    * parameter can also be passed so that the entries are added to it incrementally.
    */
   _flattenProperties(data, currentPath, flattenedProperties = {}) {
-    // XXX Avoid flattening batch upload blob values (for blob properties). Could possibly be avoided if we were aware
-    // of the data types of each property.
-    if (data['upload-batch'] && data['upload-fileId']) {
+    const key = currentPath.split('.').pop();
+    const [schemaId, fieldPath] = key.split(':');
+    const currentSchema = this._findSchema(schemaId);
+    // Due to blob's data structure, we don't want to flat it
+    if (currentSchema && currentSchema.fields && currentSchema.fields[fieldPath] === 'blob') {
       flattenedProperties[currentPath] = data;
       return flattenedProperties;
     }
-    Object.keys(data).forEach((key) => {
-      const value = data[key];
-      const propertyPath = currentPath ? `${currentPath}.${key}` : key;
+
+    Object.keys(data).forEach((k) => {
+      const value = data[k];
+      const propertyPath = currentPath ? `${currentPath}.${k}` : k;
       if (value instanceof Object && !Array.isArray(value)) {
         this._flattenProperties(value, propertyPath, flattenedProperties);
       } else {
@@ -283,6 +307,7 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
     const bulkLayout = this.$$('nuxeo-layout').element;
     const flattenedProperties = this._flattenProperties(bulkLayout.document.properties, 'document.properties');
     let properties = '';
+    let propertiesBehaviors;
     // go through each of the property paths that exist in the document of the layout
     Object.keys(flattenedProperties).forEach((boundPath) => {
       // get the element bound to the property
@@ -300,12 +325,19 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
           value = JSON.stringify(value);
         }
         properties = `${properties}${path}=${value}\n`;
+      } else if (bulkWidget.updateMode === 'addValues') {
+        let value = bulkLayout.get(boundPath);
+        if (this._shouldStringifyValue(value)) {
+          value = JSON.stringify(value);
+        }
+        properties = `${properties}${path}=${value}\n`;
+        propertiesBehaviors = `${properties}${path}=append_excluding_duplicates`;
       } else if (bulkWidget.updateMode === 'remove') {
         properties = `${properties}${path}=\n`;
       }
     });
     this.input = this.documents;
-    this.params = { properties };
+    this.params = { properties, propertiesBehaviors };
     super._execute().finally(() => this.fire('refresh'));
     this.$.dialog.toggle();
     this._setSaving(false);
@@ -358,7 +390,6 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
                 const sourceParts = part.source.split('.');
                 sourceParts.pop();
                 // create the path for each bound property (necessary for complex properties)
-                // XXX If we had the information about the property data type, we could plug it here.
                 createNestedObject(bulkLayout, sourceParts);
                 bulkLayout.set(part.source, null);
               });
@@ -398,12 +429,15 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
   /**
    * Loads the bulk edit layout.
    */
-  _loadLayout(documents, layout, hrefFunction, hrefBase) {
-    // force layout restamp
-    this._set_href(null);
+  _loadLayout(layout, hrefFunction, hrefBase) {
+    const { href } = this.$$('nuxeo-layout');
     const base = hrefBase || pathFromUrl(this.__dataHost.importPath || this.importPath);
     const path = [base, hrefFunction(layout)].join(base.slice(-1) !== '/' ? '/' : '');
-    this._set_href(path);
+    if (href !== path) {
+      // force layout restamp
+      this._set_href(null);
+      this._set_href(path);
+    }
   }
 
   /**
@@ -428,6 +462,10 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
       const bulkWidget = this._getBulkWidget(boundElement);
       // tag the bulk widget with the path to be able trace the property value from bulk widget
       bulkWidget.boundPath = boundPath;
+      // if field is multivalued, enable it in the bulk-widget
+      if (this._isArrayProperty(boundPath)) {
+        bulkWidget._isMultivalued = true;
+      }
       // flip modes according to the value update
       if (['keep', 'remove'].includes(bulkWidget.updateMode) && !this._isValueEmpty(value)) {
         // flip mode to replace if mode is keep/remove and value is not empty
@@ -448,53 +486,69 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
    */
   _elementChanged() {
     const layout = this.$$('nuxeo-layout');
-    if (!layout || !layout.element || !layout.element.shadowRoot) {
-      return;
+    if (layout && layout.element) {
+      // the element's DOM might not be yet be initialized. If that is the case, we should wait for it.
+      customElements.whenDefined(layout.element.is).then(async () => {
+        const bulkLayout = layout.element;
+        // XXX wait for the shadow root to be attached, affects Safari, see WEBUI-842
+        // we are setting a time limit to prevent infinite wait
+        let shadowChecks = 0;
+        const timeLimit = 3000;
+        const interval = 50;
+        while (!bulkLayout.shadowRoot && shadowChecks * interval <= timeLimit) {
+          shadowChecks++;
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((r) => setTimeout(r, 50));
+        }
+        if (shadowChecks * interval > timeLimit) {
+          console.warn(`bulk edit layout "${this.layout}" shadow root not found`);
+        }
+        // initialize document if need be
+        if (!bulkLayout.document) {
+          bulkLayout.document = {
+            properties: {},
+          };
+        }
+        // inject a properties observer callback function in the layout
+        bulkLayout._propertiesObserver = this._propertiesObserver.bind(this);
+        // set the observer in the layout so that when a property gets updated, the callback is executed
+        bulkLayout._createMethodObserver('_propertiesObserver(document.properties.*)', true);
+        // replace all the widgets in the layout with bulk widget wrappers
+        // a widget is a node identified with the `role="widget"` attribute, it can be something as simple
+        // an input element bound to a property, or a complex DOM structure with an element somewhere inside
+        // bound to a property, example:
+        // <div role="widget"> (<- widget)
+        //   <label>Description</label>
+        //   <nuxeo-input value="{{document.properties.dc:description}}"></nuxeo-input> (<- bound element)
+        // </div>
+        // XXX The data table selector is needed because it sets `role="table"` on itself (see ELEMENTS-1346)
+        const selector = '[role="widget"], nuxeo-data-table[role="table"]';
+        const widgets = Array.from(bulkLayout.shadowRoot.querySelectorAll(selector));
+        widgets.forEach((widget) => {
+          const { parentNode } = widget;
+          const bulkWidget = document.createElement('nuxeo-bulk-widget');
+          parentNode.replaceChild(bulkWidget, widget);
+          bulkWidget.appendChild(widget);
+          // get the element that is bound to a property
+          const boundElement = this._getBoundElement(widget, bulkLayout.__templateInfo);
+          // keep a reference of this element in the bulk widget
+          bulkWidget.element = boundElement;
+          // move the `role="widget"` to the bulk widget
+          widget.removeAttribute('role');
+          bulkWidget.setAttribute('role', 'widget');
+          // move the `label` to the bulk widget
+          if (boundElement.label) {
+            bulkWidget.label = boundElement.label;
+            boundElement.label = null;
+          }
+          // move the `required` to the bulk widget
+          if (boundElement.required) {
+            bulkWidget._required = true;
+            boundElement.required = null;
+          }
+        });
+      });
     }
-    const bulkLayout = layout.element;
-    // initialize document if need be
-    if (!bulkLayout.document) {
-      bulkLayout.document = {
-        properties: {},
-      };
-    }
-    // inject a properties observer callback function in the layout
-    bulkLayout._propertiesObserver = this._propertiesObserver.bind(this);
-    // set the observer in the layout so that when a property gets updated, the callback is executed
-    bulkLayout._createMethodObserver('_propertiesObserver(document.properties.*)', true);
-    // replace all the widgets in the layout with bulk widget wrappers
-    // a widget is a node identified with the `role="widget"` attribute, it can be something as simple an input element
-    // bound to a property, or a complex DOM structure with an element somewhere inside bound to a property, example:
-    // <div role="widget"> (<- widget)
-    //   <label>Description</label>
-    //   <nuxeo-input value="{{document.properties.dc:description}}"></nuxeo-input> (<- bound element)
-    // </div>
-    // XXX The data table selector is needed because it sets `role="table"` on itself (see ELEMENTS-1346)
-    const selector = '[role="widget"], nuxeo-data-table[role="table"]';
-    const widgets = Array.from(bulkLayout.shadowRoot.querySelectorAll(selector));
-    widgets.forEach((widget) => {
-      const { parentNode } = widget;
-      const bulkWidget = document.createElement('nuxeo-bulk-widget');
-      parentNode.replaceChild(bulkWidget, widget);
-      bulkWidget.appendChild(widget);
-      // get the element that is bound to a property
-      const boundElement = this._getBoundElement(widget, bulkLayout.__templateInfo);
-      // keep a reference of this element in the bulk widget
-      bulkWidget.element = boundElement;
-      // move the `role="widget"` to the bulk widget
-      widget.removeAttribute('role');
-      bulkWidget.setAttribute('role', 'widget');
-      // move the `label` to the bulk widget
-      if (boundElement.label) {
-        bulkWidget.label = boundElement.label;
-        boundElement.label = null;
-      }
-      // move the `required` to the bulk widget
-      if (boundElement.required) {
-        bulkWidget._required = true;
-        boundElement.required = null;
-      }
-    });
   }
 
   /**
@@ -545,9 +599,8 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
     }
     const bulkLayout = this.$$('nuxeo-layout').element;
     const value = bulkLayout.get(boundPath);
-    // XXX If we knew the data types for each property type we wouldn't need to infer it.
     if (Array.isArray(value)) {
-      if (value.length !== 0) {
+      if (value.length !== 0 && this._isArrayProperty(boundPath)) {
         bulkLayout.set(boundPath, []);
       }
     } else {
@@ -582,7 +635,7 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
     } else if (bulkWidget.updateMode === 'remove') {
       this._clearValue(bulkWidget.boundPath);
       this._setWidgetDisabled(bulkWidget.element, true);
-    } else if (bulkWidget.updateMode === 'replace') {
+    } else if (bulkWidget.updateMode === 'replace' || bulkWidget.updateMode === 'addValues') {
       this._setWidgetDisabled(bulkWidget.element, false);
     }
     const bulkLayout = this.$$('nuxeo-layout').element;
@@ -601,6 +654,31 @@ class NuxeoEditDocumentsButton extends mixinBehaviors([I18nBehavior, FiltersBeha
   _updateSaveButton() {
     const bulkWidgets = Array.from(this.$$('nuxeo-layout').element.shadowRoot.querySelectorAll('nuxeo-bulk-widget'));
     this.$.save.disabled = bulkWidgets.every((bulkWidget) => bulkWidget.updateMode === 'keep');
+  }
+
+  _isArrayProperty(boundPath) {
+    if (!boundPath) {
+      return;
+    }
+    if (boundPath.startsWith('document.properties.')) {
+      boundPath = boundPath.replace(/^(document\.properties\.)/, '');
+    }
+    const [schemaId, fieldPath] = boundPath.split(':');
+    return this._isArrayPropertyPath(this._findSchema(schemaId), fieldPath);
+  }
+
+  _isArrayPropertyPath(model, fieldPath) {
+    if (fieldPath.includes('.')) {
+      const [fieldId, ...remainingPath] = fieldPath.split('.');
+      return this._isArrayPropertyPath(model.fields[fieldId], remainingPath.join('.'));
+    }
+    const type = model.fields[fieldPath];
+    // Complex fields will have nested types, so we need to check them
+    return (type.type || type).endsWith('[]');
+  }
+
+  _findSchema(schemaId) {
+    return schemas.find((schema) => schema['@prefix'] === schemaId);
   }
 }
 window.customElements.define(NuxeoEditDocumentsButton.is, NuxeoEditDocumentsButton);

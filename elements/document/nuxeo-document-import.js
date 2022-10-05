@@ -372,8 +372,6 @@ Polymer({
     <nuxeo-operation id="fileManagerImport" op="FileManager.Import" sync-indexing></nuxeo-operation>
     <nuxeo-document
       id="docRequest"
-      doc-path="[[targetPath]]"
-      data="[[document]]"
       sync-indexing
       headers='{"X-Batch-No-Drop": "true"}'
       response="{{createResponse}}"
@@ -500,7 +498,7 @@ Polymer({
             </div>
           </template>
         </div>
-        <span class="upload-error">[[_importErrorMessage]]</span>
+        <span class="upload-error" aria-live="assertive">[[_importErrorMessage]]</span>
         <div class="buttons horizontal end-justified layout">
           <div class="flex start-justified">
             <paper-button noink dialog-dismiss on-tap="_cancel" hidden$="[[_creating]]" class="secondary"
@@ -563,6 +561,7 @@ Polymer({
                         attr-for-selected="key"
                         label="[[i18n('documentImportForm.type.label')]]"
                         placeholder="[[i18n('documentImportForm.type.placeholder')]]"
+                        name="assetType"
                         error-message="[[i18n('documentImportForm.type.error')]]"
                         required
                       >
@@ -670,6 +669,7 @@ Polymer({
             <paper-button
               noink
               class="text"
+              name="applyAll"
               on-tap="_applyToAll"
               disabled$="[[_disableApplyToAll(_initializingDoc,_creating,canCreate,customizing,docIdx)]]"
             >
@@ -680,6 +680,7 @@ Polymer({
           <paper-button
             noink
             class="primary"
+            name="createWithProperties"
             on-tap="_importWithProperties"
             disabled$="[[!_canImportWithMetadata(_creating,_initializingDoc,canCreate,hasLocalFilesUploaded,hasRemoteFiles,localFiles.*,remoteFiles.*)]]"
             aria-label$="[[i18n('command.create')]]"
@@ -1063,6 +1064,11 @@ Polymer({
         this._setFileProp(index, 'checked', true);
       }
     }
+    const currentFile = this._getCurrentFile();
+    if (currentFile && currentFile._validationReport) {
+      const layout = this.$$('#document-import');
+      layout.reportValidation(currentFile._validationReport);
+    }
   },
 
   _validate() {
@@ -1182,7 +1188,7 @@ Polymer({
         this.navigateTo(response.entries ? response.entries[0] : response);
       } else {
         this.fire('document-updated');
-        this.navigateTo('document', this.parent);
+        this.navigateTo(this.parent);
       }
     }
   },
@@ -1242,13 +1248,23 @@ Polymer({
               indexesToRemove.push(idx);
               return result;
             })
-            .catch((error) => error);
+            .catch((error) => {
+              // save the validation_report for later display by the nuxeo-document-layout
+              if (!(error instanceof Error) && error['entity-type'] && error['entity-type'] === 'validation_report') {
+                arr[idx]._validationReport = error;
+              }
+              return error;
+            });
         })(i >= self.localFiles.length ? remoteIndexes : localIndexes, index),
       );
     }
     Promise.all(promises).then((results) => {
       const errorFree = results.filter(
-        (result) => !(result instanceof Error) && result['entity-type'] && result['entity-type'] !== 'exception',
+        (result) =>
+          !(result instanceof Error) &&
+          result['entity-type'] &&
+          result['entity-type'] !== 'exception' &&
+          result['entity-type'] !== 'validation_report',
       );
       this._handleSuccess(this._mergeResponses.apply(null, errorFree), !(errorFree.length < results.length));
       if (errorFree.length < results.length) {
@@ -1266,18 +1282,22 @@ Polymer({
           .forEach((index) => {
             this.splice('remoteFiles', index, 1);
           });
+        /*
+         * XXX Prevent this._selectDoc(0) from storing the previously selected file,
+         * in case it was saved and removed from localFiles.
+         */
+        this.docIdx = -1;
         this._selectDoc(0);
       }
     });
   },
 
   _processFileWithMetadata(file) {
-    this.document = file.docData.document;
-    this.targetPath = file.docData.parent;
-    this.document.name = file.sanitizedName || file.name;
+    const { document, parent: docPath } = file.docData;
+    document.name = file.sanitizedName || file.name;
     const blobProperty = this.documentBlobProperties[file.docData.type.id] || this.documentBlobProperties.default;
     // XXX if fileData.type == Note, then the file's contents should be passed instead
-    this.document.properties[blobProperty] = file.providerId
+    document.properties[blobProperty] = file.providerId
       ? {
           providerId: file.providerId,
           user: file.user,
@@ -1287,6 +1307,8 @@ Polymer({
           'upload-batch': this.batchId,
           'upload-fileId': String(file.index),
         };
+    this.$.docRequest.data = document;
+    this.$.docRequest.docPath = docPath;
     return this.$.docRequest.post();
   },
 

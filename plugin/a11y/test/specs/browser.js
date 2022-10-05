@@ -12,15 +12,15 @@ const EXPECTED_VIOLATIONS = {
   'landmark-one-main': 1,
   'meta-viewport': 1,
   'page-has-heading-one': 1,
-  region: 32,
-  'nested-interactive': 13,
+  region: 24,
+  'nested-interactive': 15,
 };
 
 const EXPECTED_INCOMPLETE_VIOLATIONS = {
   'aria-allowed-attr': 1,
   'aria-allowed-role': 7,
   'aria-valid-attr-value': 1,
-  'color-contrast': 0,
+  'color-contrast': 11,
 };
 
 describe('Nuxeo Browser', () => {

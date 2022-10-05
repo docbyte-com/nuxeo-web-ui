@@ -71,6 +71,10 @@ Then('I can see the selection toolbar', function() {
   this.ui.browser.selectionToolbar.waitForVisible();
 });
 
+When('I cannot see the display selection link', function() {
+  this.ui.browser.selectionToolbar.waitForNotVisible('.selectionLink').should.be.true;
+});
+
 Then('I can add selection to the {string} collection', function(collectionName) {
   this.ui.browser.waitForVisible();
   this.ui.browser.selectionToolbar.addToCollectionDialog.addToCollection(collectionName);
@@ -106,7 +110,7 @@ Then('I can see {int} document(s)', function(numberOfResults) {
   results.waitForVisible();
 
   const { displayMode } = results;
-  results.resultsCount(displayMode).should.equal(numberOfResults);
+  driver.waitUntil(() => results.resultsCount(displayMode) === numberOfResults);
 });
 
 Then(/^I can see the permissions page$/, function() {
@@ -213,4 +217,8 @@ Then('I can delete all the documents from the {string} collection', function(nam
   this.ui.browser.removeSelectionFromCollection(name);
   // HACK - because the delete all is async
   driver.pause(1000);
+});
+
+Then('I can see the browser title as {string}', (title) => {
+  driver.waitUntil(() => title === browser.getTitle());
 });

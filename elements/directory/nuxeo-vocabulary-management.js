@@ -59,10 +59,6 @@ Polymer({
         margin: 1em 0 1em 0;
       }
 
-      nuxeo-select {
-        max-width: 223px;
-      }
-
       nuxeo-dialog {
         min-width: 480px;
       }
@@ -78,6 +74,12 @@ Polymer({
         @apply --layout-horizontal;
         @apply --layout-justified;
         margin-top: 16px;
+      }
+
+      paper-item span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     </style>
 
@@ -98,7 +100,9 @@ Polymer({
             attr-for-selected="name"
           >
             <template is="dom-repeat" items="[[vocabularies]]" as="vocabulary">
-              <paper-item name$="[[vocabulary.name]]">[[vocabulary.name]]</paper-item>
+              <paper-item name$="[[vocabulary.name]]"
+                ><span title="[[vocabulary.name]]">[[vocabulary.name]]</span></paper-item
+              >
             </template>
           </nuxeo-select>
         </nuxeo-card>
@@ -150,7 +154,7 @@ Polymer({
     </nuxeo-page>
 
     <nuxeo-dialog id="vocabularyEditDialog" with-backdrop>
-      <h2>[[i18n('vocabularyManagement.popup.editEntry')]]</h2>
+      <h2>[[_computeDialogHeading(_new)]]</h2>
       <iron-form id="form">
         <form>
           <nuxeo-layout
@@ -448,5 +452,9 @@ Polymer({
           throw error;
         }
       });
+  },
+
+  _computeDialogHeading(_new) {
+    return this.i18n(_new ? 'vocabularyManagement.popup.addEntry' : 'vocabularyManagement.popup.editEntry');
   },
 });

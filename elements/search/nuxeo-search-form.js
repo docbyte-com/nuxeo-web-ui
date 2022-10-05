@@ -378,12 +378,14 @@ Polymer({
         auto-validate
         error-message="[[i18n('searchForm.savePopup.error')]]"
         pattern="^[^/]*$"
-        required
+        value="{{_savedSearchTitle}}"
       >
       </paper-input>
       <div class="buttons">
         <paper-button dialog-dismiss class="secondary">[[i18n('command.cancel')]]</paper-button>
-        <paper-button noink class="primary" on-tap="_saveSearch">[[i18n('command.save')]]</paper-button>
+        <paper-button noink class="primary" on-tap="_saveSearch" disabled$="[[!_savedSearchTitle]]"
+          >[[i18n('command.save')]]</paper-button
+        >
       </div>
     </nuxeo-dialog>
 
@@ -404,10 +406,12 @@ Polymer({
 
     <nuxeo-dialog id="shareDialog" with-backdrop reparent opened="{{permissionsVisible}}">
       <h2>[[i18n('searchForm.shared.heading')]]</h2>
-      <nuxeo-document-permissions
-        doc-id="[[selectedSearch.id]]"
-        visible="[[permissionsVisible]]"
-      ></nuxeo-document-permissions>
+      <paper-dialog-scrollable>
+        <nuxeo-document-permissions
+          doc-id="[[selectedSearch.id]]"
+          visible="[[permissionsVisible]]"
+        ></nuxeo-document-permissions>
+      </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss class="secondary">[[i18n('command.close')]]</paper-button>
       </div>
@@ -611,6 +615,8 @@ Polymer({
     skipAggregates: Boolean,
 
     _searches: Array,
+
+    _savedSearchTitle: String,
   },
 
   observers: [
@@ -749,10 +755,8 @@ Polymer({
   _selectedSearchChanged() {
     if (this.selectedSearch) {
       this.params = this._mutateParams(this.selectedSearch.params);
-      if (this.params && this.params.ecm_fulltext) {
-        this.searchTerm = this.params.ecm_fulltext.replace('*', '');
-        this.form.searchTerm = this.searchTerm;
-      }
+      this.searchTerm = this.params && this.params.ecm_fulltext ? this.params.ecm_fulltext.replace('*', '') : '';
+      this.form.searchTerm = this.searchTerm;
       this._fetch(this.$.provider);
     }
   },
@@ -809,7 +813,7 @@ Polymer({
 
   saveAs() {
     this.$$('#actionsDropdown').close();
-    this.$.savedSearchTitle.value = '';
+    this._savedSearchTitle = '';
     this.$.saveDialog.open();
     this._saveAs = true;
   },
@@ -848,7 +852,7 @@ Polymer({
         'entity-type': 'savedSearch',
         pageProviderName: this.provider,
         params: this.params,
-        title: this.$.savedSearchTitle.value,
+        title: this._savedSearchTitle,
       };
       _el.post().then((search) => {
         const { id } = search;

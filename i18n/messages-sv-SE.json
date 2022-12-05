@@ -1161,7 +1161,7 @@
   "noteMetadataLayout.format": "Format",
   "noteViewLayout.note.saved": "Anteckning har sparats.",
   "noteViewLayout.placeholder": "Skriv här...",
-  "nxqlSearch.query": "Query Query (Ctrl+Enter för att köra)",
+  "nxqlSearch.query": "Query (Ctrl+Enter för att köra)",
   "nxqlSearch.query.placeholder": "Ange en fråga",
   "nxqlSearch.heading": "Query Search",
   "pageableWidget.lastContributor": "Senaste deltagare",

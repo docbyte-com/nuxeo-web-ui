@@ -1161,7 +1161,7 @@
   "noteMetadataLayout.format": "Indeling",
   "noteViewLayout.note.saved": "Aantekening is opgeslagen.",
   "noteViewLayout.placeholder": "Hier typen ...",
-  "nxqlSearch.query": "Query-query (Ctrl+Enter om uit te voeren)",
+  "nxqlSearch.query": "Query (Ctrl+Enter om uit te voeren)",
   "nxqlSearch.query.placeholder": "Een query invoeren",
   "nxqlSearch.heading": "Query-zoekopdracht",
   "pageableWidget.lastContributor": "Laatste medewerker",

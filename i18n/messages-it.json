@@ -1161,7 +1161,7 @@
   "noteMetadataLayout.format": "Formato",
   "noteViewLayout.note.saved": "La nota è stata salvata.",
   "noteViewLayout.placeholder": "Digitare qui...",
-  "nxqlSearch.query": "Query Query (Ctrl+Invio per eseguire)",
+  "nxqlSearch.query": "Query (Ctrl+Invio per eseguire)",
   "nxqlSearch.query.placeholder": "Immettere una query",
   "nxqlSearch.heading": "Ricerca Query",
   "pageableWidget.lastContributor": "Ultimo collaboratore",

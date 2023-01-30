@@ -130,7 +130,6 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
           </template>
           <div class="doc-path">
             <a
-              href$="[[urlFor(document)]]"
               class="current breadcrumb-item breadcrumb-item-current"
               aria-current="page"
               title="[[_title(document)]]"
@@ -188,20 +187,20 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
     _setBreadcrumbElements() {
       const ancestors = this._ancestors;
       this.deletedNodes = [];
-      if (ancestors && this._breadcrumbs) {
-        ancestors.innerHTML = '';
-        this._breadcrumbs.forEach((element) => {
-          const listItem = document.createElement('li');
-
-          const anchor = document.createElement('a');
-          anchor.textContent = element.title;
-          anchor.setAttribute('title', element.title);
-          anchor.setAttribute('href', this.urlFor(element));
-
-          listItem.appendChild(anchor);
-          ancestors.appendChild(listItem);
-        });
-      }
+      // if (ancestors && this._breadcrumbs) {
+      //   ancestors.innerHTML = '';
+      //   this._breadcrumbs.forEach((element) => {
+      //     const listItem = document.createElement('li');
+      //
+      //     const anchor = document.createElement('a');
+      //     anchor.textContent = element.title;
+      //     anchor.setAttribute('title', element.title);
+      //     anchor.setAttribute('href', this.urlFor(element));
+      //
+      //     listItem.appendChild(anchor);
+      //     ancestors.appendChild(listItem);
+      //   });
+      // }
       this._resize();
     }
 

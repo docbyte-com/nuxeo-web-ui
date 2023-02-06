@@ -3,7 +3,7 @@
   <parent>
     <groupId>cloud.docbyte.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>2022.10.4-SNAPSHOT</version>
+    <version>2023.01.18-SNAPSHOT</version>
   </parent>
 
   <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
@@ -15,8 +15,8 @@
 
   <properties>
     <nuxeo.skip.enforcer>true</nuxeo.skip.enforcer>
-    <nuxeo.target.version>2021.*</nuxeo.target.version>
-    <nuxeo.platform.version>2022.1.13-SNAPSHOT</nuxeo.platform.version>
+    <nuxeo.target.version>2023.*</nuxeo.target.version>
+    <nuxeo.platform.version>2023.01.18-SNAPSHOT</nuxeo.platform.version>
   </properties>
 
   <modules>
@@ -50,18 +50,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-core</artifactId>
-        <version>1.27.2</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-api</artifactId>
-        <version>1.27.2</version>
-      </dependency>
-      <dependency>
-
         <groupId>cloud.docbyte.nuxeo.web.ui</groupId>
         <artifactId>nuxeo-web-ui</artifactId>
         <version>${project.version}</version>

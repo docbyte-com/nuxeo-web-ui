@@ -334,7 +334,7 @@ Polymer({
       responsive-width="720px"
       edge-swipe-sensitivity="0"
     >
-      <div slot="drawer">
+      <div slot="drawer" role="list">
         <!-- logo -->
         <div id="logo-wrapper">
           <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
@@ -350,6 +350,7 @@ Polymer({
           selected-class="selected"
           on-iron-activate="_toggleDrawer"
           aria-label$="[[i18n('app.drawer')]]"
+          aria-expanded="[[drawerOpened]]"
           id="menu-wrapper"
         >
           <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>

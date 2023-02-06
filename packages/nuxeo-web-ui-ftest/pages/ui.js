@@ -156,6 +156,10 @@ export default class UI extends BasePage {
     return this.pages.element('nuxeo-tasks');
   }
 
+  get emptyAuthorizedApps() {
+    return this.el.$('nuxeo-data-table .emptyResult');
+  }
+
   get isConnectionActive() {
     /* global document */
     return driver.execute(() => document.querySelector('nuxeo-connection').active);
@@ -193,5 +197,9 @@ export default class UI extends BasePage {
 
   bulkEdit(selector) {
     return new BulkEdit(selector);
+  }
+
+  get filterView() {
+    return this.el.element('paper-icon-button[id="toogleFilter"]');
   }
 }

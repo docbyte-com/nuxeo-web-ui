@@ -152,7 +152,7 @@ Polymer({
       }
 
       .resultsCount {
-        opacity: 0.5;
+        opacity: 0.7;
         margin-right: 16px;
         transition: opacity 100ms ease-in-out;
       }
@@ -192,7 +192,7 @@ Polymer({
 
       <div class="resultActions" hidden$="[[hideContentViewActions]]">
         <div class="commonActions">
-          <span class="resultsCount" hidden$="[[!_showResultsCount(nxProvider, resultsCount)]]">
+          <span class="resultsCount" aria-live="polite" hidden$="[[!_showResultsCount(nxProvider, resultsCount)]]">
             [[_resultsCountLabel]]
           </span>
           <template is="dom-if" if="[[_displayQuickFilters(displayQuickFilters, view)]]">
@@ -217,7 +217,7 @@ Polymer({
                     selected$="[[_isCurrentDisplayMode(item, displayMode)]]"
                     disabled$="[[_isCurrentDisplayMode(item, displayMode)]]"
                     on-tap="_toggleDisplayMode"
-                  >
+                    aria-selected="true">
                   </paper-icon-button>
                 </template>
               </template>
@@ -696,6 +696,8 @@ Polymer({
   },
 
   clearSelection() {
+    this._excludedDocs = -1;
+    this.selectAllActive = false;
     this.view.clearSelection();
   },
 

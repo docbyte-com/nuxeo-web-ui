@@ -173,6 +173,10 @@ Polymer({
         font-weight: 500;
       }
 
+      #actionsDropdown > .iron-selected {
+        background-color: #8c8c8c;
+      }
+
       .row {
         box-sizing: border-box;
         margin-bottom: 1rem;
@@ -337,7 +341,7 @@ Polymer({
             <template>
               <div tabindex$="{{tabIndex}}" class$="[[_computedClass(selected)]]">
                 <div class="list-item-box">
-                  <div class="list-item-info">
+                  <div class="list-item-info" role="listitem" aria-selected="true">
                     <div class="vertical layout center">
                       <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
                     </div>
@@ -610,6 +614,14 @@ Polymer({
     },
 
     /**
+     * The current document loaded is bound to this property.
+     */
+    currentDocument: {
+      type: Object,
+      value: null,
+    },
+
+    /**
      * If `true`, aggregagtes from page provider definition will not be computed.
      */
     skipAggregates: Boolean,
@@ -627,6 +639,12 @@ Polymer({
 
   listeners: {
     'iron-resize': '_calculateViewportHeight',
+  },
+
+  ready() {
+    window.addEventListener('navigate', (e) => {
+      this.currentDocument = e && e.detail && e.detail.item;
+    });
   },
 
   _visibleChanged() {
@@ -710,7 +728,9 @@ Polymer({
   _selectedDocChanged(doc, old) {
     if ((doc && doc.path && !old) || (doc && doc.path && old && old.path && doc.path !== old.path)) {
       this.__renderDebouncer = Debouncer.debounce(this.__renderDebouncer, timeOut.after(150), () => {
-        this.navigateTo(doc);
+        if (!this.currentDocument || (this.currentDocument && this.currentDocument.path !== doc.path)) {
+          this.navigateTo(doc);
+        }
       });
     }
   },

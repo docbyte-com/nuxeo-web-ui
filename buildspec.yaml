@@ -26,6 +26,7 @@ phases:
 
   pre_build:
     commands:
+      - . ~/tools/codebuild-gittools.sh
       - REPOSITORY_URI=518241560725.dkr.ecr.eu-west-1.amazonaws.com/nuxeo-web-ui
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}

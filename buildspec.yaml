@@ -31,7 +31,7 @@ phases:
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
-      - if [ "$CODEBUILD_ACCOUNT_ID" == "286714674749" -a "$CODEBUILD_GIT_BRANCH" == "development" ];
+      - if [ "$CODEBUILD_GIT_BRANCH" == "development" ];
         then
         CHANGELIST=-$CODEBUILD_BUILD_NUMBER;
         fi

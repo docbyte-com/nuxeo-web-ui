@@ -300,16 +300,16 @@ const template = html`
                     background-color: var(--nuxeo-box);
                 }
 
-                --nuxeo-label: {
-                    display: block;
-                    opacity: 0.6;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    font-weight: 400 !important;
-                    letter-spacing: 0.005em !important;
-                    font-family: var(--nuxeo-app-font);
-                }
+        --nuxeo-label: {
+          display: block;
+          opacity: 0.7;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-weight: 400 !important;
+          letter-spacing: 0.005em !important;
+          font-family: var(--nuxeo-app-font);
+        }
 
                 --nuxeo-tag: {
                     display: inline-block;

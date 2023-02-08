@@ -103,7 +103,7 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
           #ellipsis {
             color: var(--nuxeo-breadcrumb-color, black);
             text-decoration: none;
-            opacity: 0.5;
+            opacity: 0.7;
             font-weight: 400;
             letter-spacing: 0.02rem;
           }

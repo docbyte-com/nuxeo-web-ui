@@ -18,10 +18,10 @@ phases:
       nodejs: 16
       java: corretto17
     commands:
-      - aws s3 sync s3://db-dev-buildartifacts/tools/ tools/
-      - chmod a+x -R tools/
+      - aws s3 sync s3://db-dev-buildartifacts/tools/ ~/tools/
+      - chmod a+x -R ~/tools/
       - n 14
-      - . ./tools/prepEnv.sh
+      - . ~/tools/prepEnv.sh
       - echo Build Started
 
   pre_build:

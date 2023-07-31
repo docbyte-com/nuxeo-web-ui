@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -211,7 +212,12 @@ Polymer({
           <nuxeo-download-button document="[[doc]]"></nuxeo-download-button>
         </div>
         <div class="select">
-          <paper-icon-button noink icon="icons:check" title="select" on-tap="_onCheckBoxTap"></paper-icon-button>
+          <paper-icon-button
+            noink
+            icon="icons:check"
+            title="[[_computeTitle(doc)]]"
+            on-tap="_onCheckBoxTap"
+          ></paper-icon-button>
         </div>
       </div>
     </div>
@@ -278,5 +284,9 @@ Polymer({
 
   _selectedItemsChanged() {
     this.selectionMode = this.selectedItems && this.selectedItems.length > 0;
+  },
+
+  _computeTitle(doc) {
+    return `${doc && doc.title}${this.i18n && this.i18n('command.select')}`;
   },
 });

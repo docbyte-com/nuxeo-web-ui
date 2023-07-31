@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -74,7 +75,7 @@ Polymer({
         <nuxeo-dropzone
           value="{{_attachments}}"
           multiple
-          value-key="file"
+          value-key="[[_getFileValue()]]"
           uploaded-message="[[i18n('documentAttachments.upload.uploaded')]]"
           message="[[i18n('documentAttachments.upload.add')]]"
           drag-content-message="[[i18n('documentAttachments.upload.drop')]]"
@@ -162,5 +163,10 @@ Polymer({
 
   _isAvailable(document, xpath) {
     return document && xpath && this.hasSchema(document, xpath.split(':')[0]);
+  },
+
+  _getFileValue() {
+    const fileName = this.document.type === 'File' && this.xpath === 'files:files' ? 'file' : '';
+    return fileName;
   },
 });

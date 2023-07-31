@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -109,7 +110,7 @@ Polymer({
       <div class="toolbar" id="toolbar">
         <slot id="header" slot="header" name="header"></slot>
       </div>
-      <div id="tabs">
+      <div id="tabs" role="list">
         <slot name="tabs"></slot>
       </div>
       <div id="content">

@@ -37,7 +37,7 @@ phases:
         CHANGELIST=-$CODEBUILD_BUILD_NUMBER;
         fi
       - VERSION=$(printf '%(%Y.%m.%d)T\n' -1)$CHANGELIST
-      - OLD_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+      - OLD_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate -Dexpression=project.version -q -DforceStdout)
       - grep -R $OLD_VERSION -l | xargs -I'{}' sed -i -E "s/$OLD_VERSION/$VERSION/" '{}'
       - echo Build started on `date`
       - npm install

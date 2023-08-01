@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -447,7 +448,7 @@ Polymer({
                         <paper-icon-button
                           icon="[[_computeRemoveIcon(file.*)]]"
                           on-tap="_removeBlob"
-                          aria-labelledby="removeBlobTooltip"
+                          aria-label$="[[_computeRemoveBtnTitle(file.name, i18n)]]"
                         ></paper-icon-button>
                         <nuxeo-tooltip id="removeBlobTooltip">[[_computeRemoveLabel(file.*, i18n)]]</nuxeo-tooltip>
                       </div>
@@ -1399,6 +1400,10 @@ Polymer({
       }
     }
     return '';
+  },
+
+  _computeRemoveBtnTitle(fileName) {
+    return `${fileName}${this.i18n('command.remove')}`;
   },
 
   _styleFileCheck(e) {

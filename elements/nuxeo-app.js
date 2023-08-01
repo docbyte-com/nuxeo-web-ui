@@ -1,19 +1,20 @@
 /**
- @license
- (C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+@license
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved.
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 import '@polymer/polymer/polymer-legacy.js';
 
 import '@nuxeo/nuxeo-elements/nuxeo-document.js';
@@ -78,7 +79,6 @@ import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import { importHref } from '@nuxeo/nuxeo-ui-elements/import-href.js';
-import customConfig from '../config/config.js';
 
 import { Performance } from './performance.js';
 
@@ -97,18 +97,18 @@ const MAX_TOASTS = 3; // max number of toasts that can be displayed simultaneous
 setPassiveTouchGestures(true);
 
 /**
- `nuxeo-app`
- @group Nuxeo UI
- @element nuxeo-app
- */
+`nuxeo-app`
+@group Nuxeo UI
+@element nuxeo-app
+*/
 Polymer({
   _template: html`
     <style include="nuxeo-styles">
       /**
-              * iOS fix for NXP-25986: prevent \`paper-header-panel\` from creating a new stacking context
-              * for more details, see: https://github.com/PolymerElements/paper-dialog/issues/44#issuecomment-172013206
-              * this will only work for iOS since it's the only supporting \`-webkit-overflow-scrolling\`
-              */
+        * iOS fix for NXP-25986: prevent \`paper-header-panel\` from creating a new stacking context
+        * for more details, see: https://github.com/PolymerElements/paper-dialog/issues/44#issuecomment-172013206
+        * this will only work for iOS since it's the only supporting \`-webkit-overflow-scrolling\`
+        */
       :host {
         --paper-header-panel-container: {
           -webkit-overflow-scrolling: auto;
@@ -260,7 +260,6 @@ Polymer({
 
       #drawer nuxeo-menu-item {
         @apply --nuxeo-sidebar-item-theme;
-
         --nuxeo-menu-item-link {
           @apply --nuxeo-sidebar-item-link;
         }
@@ -498,6 +497,11 @@ Polymer({
   behaviors: [RoutingBehavior, FormatBehavior, FiltersBehavior],
   importMeta: import.meta,
   properties: {
+    productName: {
+      type: String,
+      value: 'Docbyte',
+    },
+
     baseUrl: {
       type: String,
       value: '/',
@@ -674,6 +678,8 @@ Polymer({
   refresh() {
     if (this.page === 'search') {
       this._refreshSearch();
+    } else if (this.page === 'tasks') {
+      this.loadTask(this.currentTaskId);
     } else if ((this.docPath && this.docPath.length > 0) || (this.docId && this.docId.length > 0)) {
       const id = this.docId || (this.currentDocument && this.currentDocument.uid);
       this.load('browse', id, this.docPath, this.docAction);
@@ -863,7 +869,7 @@ Polymer({
       default:
         title.push(this.i18n(`app.title.${this.page}`));
     }
-    title.push(customConfig.ProductName);
+    title.push(this.productName);
     document.title = title.join(' - ');
   },
 
@@ -1005,6 +1011,7 @@ Polymer({
     this.drawerWidth = getComputedStyle(document.documentElement).getPropertyValue('--nuxeo-sidebar-width');
     this.drawerOpened = false;
     this.$.drawerPanel.closeDrawer();
+    this.selectedTab = '';
   },
 
   _fetchTaskCount() {

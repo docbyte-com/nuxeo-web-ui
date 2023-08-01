@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -309,6 +310,12 @@ Polymer({
       value: false,
       notify: true,
     },
+    hasFilesUploaded: {
+      type: Boolean,
+      readOnly: true,
+      value: false,
+      notify: true,
+    },
     _errorMessage: {
       type: String,
     },
@@ -397,6 +404,7 @@ Polymer({
   observers: ['_reset(value)', '_filesChanged(files.splices)', '_legacyReset(document)'],
 
   attached() {
+    this.uploadedFiles = [];
     this.connection = this.$.nx;
     this.setupDropZone(this.$.dropzone);
   },
@@ -411,6 +419,12 @@ Polymer({
   },
 
   async importBatch(data) {
+    this.uploadedFiles.map((item) => {
+      if (!item.batchId) {
+        item.batchId = data.detail.batchId;
+      }
+      return item.batchId;
+    });
     if (data.type === 'nx-blob-picked') {
       this.set('files', data.detail.blobs);
     } else {
@@ -446,6 +460,7 @@ Polymer({
       // if we're already displaying an error, we better update it, otherwise the user can be mislead
       this.validate();
     }
+    this._setHasFilesUploaded(true);
   },
 
   _getFiles(data) {
@@ -512,6 +527,8 @@ Polymer({
   },
 
   _reset(value) {
+    if (value && this.uploadedFiles)
+      this.files = this.uploadedFiles.filter((item) => item.batchId === value['upload-batch']);
     if (
       value == null ||
       (Array.isArray(value) &&
@@ -534,10 +551,12 @@ Polymer({
 
   _filesChanged() {
     this._setHasFiles(this.files.length > 0);
+    this._setHasFilesUploaded(false);
   },
 
   _upload(files) {
     if (files && files.length > 0) {
+      Array.from(files).forEach((item) => this.uploadedFiles.push(item));
       this.uploadFiles(files);
     }
   },

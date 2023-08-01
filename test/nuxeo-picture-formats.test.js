@@ -1,6 +1,7 @@
 /**
  @license
- (C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+ ©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -52,7 +53,7 @@ suite('nuxeo-picture-formats', () => {
               content: {
                 data: 'file1.jpeg?changeToken=1-0',
                 length: '',
-                downloadData: 'file1.jpeg?changeToken=1-0&clientReason=download',
+                downloadUrl: 'file1.jpeg?changeToken=1-0&clientReason=download',
               },
             },
           ],
@@ -64,11 +65,28 @@ suite('nuxeo-picture-formats', () => {
           dimensions: '66 x 66',
           size: '',
           format: 'picture/jpeg',
-          downloadData: 'file1.jpeg?changeToken=1-0&clientReason=download',
+          downloadUrl: 'file1.jpeg?changeToken=1-0&clientReason=download',
+          data: 'file1.jpeg?changeToken=1-0',
         },
       ];
       element.xpath = 'file:content';
       expect(element._getAdditionalFormats(document)).to.eql(additionalFormats);
+    });
+  });
+
+  suite('fetch download url', () => {
+    test('Should fetch download url when item has downloadUrl property', () => {
+      const item = {
+        downloadUrl: 'abc.docx?changeToken=1-0&clientReason=download',
+      };
+      expect(element._getDownloadUrl(item)).to.equal('abc.docx?changeToken=1-0&clientReason=download');
+    });
+
+    test('Should fetch download url when item does not have downloadUrl property', () => {
+      const item = {
+        data: 'abc.docx?changeToken=1-0',
+      };
+      expect(element._getDownloadUrl(item)).to.equal('abc.docx?changeToken=1-0');
     });
   });
 });

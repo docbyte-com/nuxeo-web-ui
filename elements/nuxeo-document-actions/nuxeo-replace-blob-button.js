@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,7 +56,7 @@ Polymer({
 
     <nuxeo-dialog id="dialog" with-backdrop>
       <h2>[[i18n('replaceBlobButton.dialog.heading')]]</h2>
-      <nuxeo-dropzone id="dropzone" value="{{value}}" has-files="{{_canSubmit}}"></nuxeo-dropzone>
+      <nuxeo-dropzone id="dropzone" value="{{value}}" has-files-uploaded="{{_canSubmit}}"></nuxeo-dropzone>
       <div class="buttons">
         <paper-button dialog-dismiss on-tap="_cancel" class="secondary"
           >[[i18n('replaceBlobButton.dialog.cancel')]]</paper-button

@@ -1,19 +1,20 @@
 /**
- @license
- (C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+@license
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved.
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 import '@polymer/polymer/polymer-legacy.js';
 
 import '@polymer/iron-localstorage/iron-localstorage.js';
@@ -37,27 +38,27 @@ import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 const hasSelectAllEnabled = config.get('selection.selectAllEnabled', false);
 
 /**
- An element to display results from a page provider.
+An element to display results from a page provider.
 
- It supports multiple display modes and handles toggling between them.
- Each display mode is associated to a display element which has to be declared as a children with `class="results"` and
- must also have a `name` and `icon` to be used as toggle button, ex:
+It supports multiple display modes and handles toggling between them.
+Each display mode is associated to a display element which has to be declared as a children with `class="results"` and
+must also have a `name` and `icon` to be used as toggle button, ex:
 
- <nuxeo-data-table class="results" name="table" icon="icon="icons:list">
+  <nuxeo-data-table class="results" name="table" icon="icon="icons:list">
 
- The current page provider will be injected in each view as `nxProvider` so a property with
- this name should be available in each results element.
+The current page provider will be injected in each view as `nxProvider` so a property with this name should be available
+in each results element.
 
- `<nuxeo-results>` handles also storing of settings for each view in local storage in which case result elements should
- expose a `settings` property.
+`<nuxeo-results>` handles also storing of settings for each view in local storage in which case result elements should
+expose a `settings` property.
 
- It will also handle refresh and selection actions so it expects elements to include `Polymer.IronResizableBehavior`,
- a `selectedItems` property and expose a small API (`clearSelection()`, `selectItems()`) part of
- `Nuxeo.PageProviderDisplayBehavior`.
+It will also handle refresh and selection actions so it expects elements to include `Polymer.IronResizableBehavior`,
+a `selectedItems` property and expose a small API (`clearSelection()`, `selectItems()`) part of
+`Nuxeo.PageProviderDisplayBehavior`.
 
- @group Nuxeo UI
- @element nuxeo-results
- */
+@group Nuxeo UI
+@element nuxeo-results
+*/
 Polymer({
   _template: html`
     <style include="nuxeo-styles">
@@ -71,8 +72,7 @@ Polymer({
       }
 
       #views slot::slotted(*),
-            #views::slotted(*) /* edge */
- {
+      #views::slotted(*) /* edge */ {
         display: block;
         position: relative;
         height: var(
@@ -83,10 +83,9 @@ Polymer({
 
       /* because some views can delegate actions into the resultActions panel */
       #views slot::slotted(:not([handles-select-all])),
-            #views slot::slotted(:not([handles-sorting])),
-            #views::slotted(:not([handles-select-all])) /* edge */,
-            #views::slotted(:not([handles-sorting])) /* edge */
- {
+      #views slot::slotted(:not([handles-sorting])),
+      #views::slotted(:not([handles-select-all])) /* edge */,
+      #views::slotted(:not([handles-sorting])) /* edge */ {
         height: calc(var(--nuxeo-results-view-height, calc(100vh - 130px - var(--nuxeo-app-top))) - 66px);
       }
 

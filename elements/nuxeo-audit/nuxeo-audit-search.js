@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -63,13 +64,27 @@ class AuditSearch extends mixinBehaviors([FormatBehavior, RoutingBehavior], Nuxe
 
       <nuxeo-card>
         <nuxeo-user-suggestion
+          role="widget"
           value="{{principalName}}"
           label="[[i18n('audit.username')]]"
           placeholder="[[i18n('audit.usernamePlaceholder')]]"
+          aria-label$="[[i18n('audit.username')]]"
         ></nuxeo-user-suggestion>
         <div class="row-container">
-          <nuxeo-date-picker role="widget" label="[[i18n('audit.from')]]" value="{{startDate}}"> </nuxeo-date-picker>
-          <nuxeo-date-picker role="widget" label="[[i18n('audit.to')]]" value="{{endDate}}"> </nuxeo-date-picker>
+          <nuxeo-date-picker
+            role="widget"
+            label="[[i18n('audit.from')]]"
+            value="{{startDate}}"
+            aria-label$="[[i18n('documentPage.process.start')]]"
+          >
+          </nuxeo-date-picker>
+          <nuxeo-date-picker
+            role="widget"
+            label="[[i18n('audit.to')]]"
+            value="{{endDate}}"
+            aria-label$="[[i18n('wf.parallelDocumentReview.endDate')]]"
+          >
+          </nuxeo-date-picker>
         </div>
         <div class="row-container">
           <nuxeo-directory-suggestion
@@ -80,6 +95,7 @@ class AuditSearch extends mixinBehaviors([FormatBehavior, RoutingBehavior], Nuxe
             multiple="true"
             placeholder="[[i18n('audit.selectEventTypes')]]"
             min-chars="0"
+            aria-label$="[[i18n('audit.eventTypes')]]"
           >
           </nuxeo-directory-suggestion>
           <nuxeo-directory-suggestion
@@ -89,6 +105,7 @@ class AuditSearch extends mixinBehaviors([FormatBehavior, RoutingBehavior], Nuxe
             value="{{category}}"
             placeholder="[[i18n('audit.selectEventCategory')]]"
             min-chars="0"
+            aria-label$="[[i18n('audit.eventCategory')]]"
           >
           </nuxeo-directory-suggestion>
         </div>

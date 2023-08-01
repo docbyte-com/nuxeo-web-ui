@@ -1,6 +1,7 @@
 /**
 @license
-(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
+All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -210,7 +211,7 @@ Polymer({
           <paper-icon-button
             noink
             icon="icons:check"
-            title="select"
+            title="[[_computeTitle(doc)]]"
             on-tap="_onCheckBoxTap"
             role="checkbox"
             aria-checked="[[selected]]"
@@ -285,5 +286,9 @@ Polymer({
 
   _hasDocument() {
     return this.doc && this.doc.uid;
+  },
+
+  _computeTitle(doc) {
+    return `${doc && doc.title}${this.i18n && this.i18n('command.select')}`;
   },
 });

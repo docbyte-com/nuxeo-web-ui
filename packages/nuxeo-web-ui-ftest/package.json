@@ -1,6 +1,6 @@
 {
   "name": "@nuxeo/nuxeo-web-ui-ftest",
-  "version": "2023.02.08-SNAPSHOT",
+  "version": "2023.07.31-SNAPSHOT",
   "bin": {
     "nuxeo-web-ui-ftest": "./bin/nuxeo-web-ui-ftest.js"
   },
@@ -39,7 +39,7 @@
     "moment": "^2.22.0",
     "multiple-cucumber-html-reporter": "^1.18.0",
     "node-fetch": "^2.6.1",
-    "nuxeo": "^3.6.0",
+    "nuxeo": "^4.0.3",
     "wdio-chromedriver-service": "^7.0.0",
     "wdio-cucumberjs-json-reporter": "^2.0.3",
     "webdriverio": "^7.2.0"

@@ -351,6 +351,7 @@ Polymer({
           aria-label$="[[i18n('app.drawer')]]"
           aria-expanded="[[drawerOpened]]"
           id="menu-wrapper"
+          on-keyup="_toggleDrawer"
         >
           <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>
 
@@ -668,6 +669,9 @@ Polymer({
     this.removeAttribute('unresolved');
 
     Performance.mark('nuxeo-app.ready');
+    this.$.menu.addEventListener('keyup', (event) => {
+      this._toggleDrawer(event, { detail: { selected: event.target.getAttribute('name') } });
+    });
   },
 
   _resetTaskSelection() {
@@ -822,6 +826,7 @@ Polymer({
   },
 
   _updateTitle() {
+    if (!this.page) return;
     const title = [];
     switch (this.page) {
       case 'browse':
@@ -976,17 +981,22 @@ Polymer({
     this.navigateTo('search', target.searchName);
   },
 
-  _toggleDrawer(e) {
+  _toggleDrawer(e, selectedObj) {
+    const selectedItem = e.type === 'keyup' ? selectedObj : e;
+    const selectedItemDetailSelected =
+      selectedItem.detail && selectedItem.detail.selected ? selectedItem.detail.selected : 0;
+
     // If the item has a link defined, close the drawer (and navigate to the link)
     if (e.detail.item.__data && e.detail.item.__data.link && e.detail.item.__data.link.length > 0) {
       this._selected = this.selectedTab = e.detail.selected;
       this._closeDrawer();
       return;
     }
-    if (e.detail.selected && this._selected === e.detail.selected && this.drawerOpened) {
+
+    if (this._selected === selectedItemDetailSelected && this.drawerOpened) {
       this._closeDrawer();
     } else {
-      this._selected = this.selectedTab = e.detail.selected;
+      this._selected = this.selectedTab = selectedItemDetailSelected;
       this._openDrawer();
     }
   },

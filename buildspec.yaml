@@ -58,3 +58,5 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Deployment done `date`
+    finally:
+      - . ~/tools/codebuild-build-result.sh

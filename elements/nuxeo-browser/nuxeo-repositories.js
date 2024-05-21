@@ -39,18 +39,20 @@ class Repositories extends mixinBehaviors([I18nBehavior, RoutingBehavior], Nuxeo
         }
       </style>
       <nuxeo-connection id="nx" on-connected="_updateSelected"></nuxeo-connection>
-      <paper-menu-button>
-        <paper-icon-button icon="icons:expand-more" slot="dropdown-trigger" aria-label$="[[i18n('command.expand')]]">
-          [[_selected.label]]
-        </paper-icon-button>
-        <paper-listbox slot="dropdown-content" selected="[[_selected]]" attr-for-selected="name">
-          <dom-repeat items="[[repositories]]" as="repo">
-            <template>
-              <paper-item name$="[[repo.name]]"><a href$="[[repo.href]]">[[i18n(repo.label)]]</a></paper-item>
-            </template>
-          </dom-repeat>
-        </paper-listbox>
-      </paper-menu-button>
+      <div style="float: left">
+        <div>[[_selected.label]]</div>
+        <paper-menu-button>
+          <paper-icon-button icon="icons:expand-more" slot="dropdown-trigger" aria-label$="[[i18n('command.expand')]]">
+          </paper-icon-button>
+          <paper-listbox slot="dropdown-content" selected="[[_selected]]" attr-for-selected="name">
+            <dom-repeat items="[[repositories]]" as="repo">
+              <template>
+                <paper-item name$="[[repo.name]]"><a href$="[[repo.href]]">[[i18n(repo.label)]]</a></paper-item>
+              </template>
+            </dom-repeat>
+          </paper-listbox>
+        </paper-menu-button>
+      </div>
     `;
   }
 

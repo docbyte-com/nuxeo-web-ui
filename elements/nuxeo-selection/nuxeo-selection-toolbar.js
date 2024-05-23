@@ -138,7 +138,7 @@ Polymer({
           <template is="dom-repeat" items="[[selectedItems]]">
             <div class="layout horizontal center">
               <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
-              <div>[[item.title]]</div>
+              <div>[[item[displayProperty]]</div>
             </div>
           </template>
         </paper-dialog-scrollable>
@@ -171,6 +171,10 @@ Polymer({
     _isDisplayToolbar: {
       type: Boolean,
       value: false,
+    },
+    displayProperty: {
+      type: String,
+      value: 'title',
     },
     /**
      * XXX - workaround: resultCounts is used to display the number of selected items (instead of selectedItems.length)

@@ -39,8 +39,8 @@ class Repositories extends mixinBehaviors([I18nBehavior, RoutingBehavior], Nuxeo
         }
       </style>
       <nuxeo-connection id="nx" on-connected="_updateSelected"></nuxeo-connection>
-      <div style="float: left">
-        <div>[[_selected.label]]</div>
+      <div style="display: flex; width: 100%;">
+        <div style="align-content: center;">[[i18n(_selectedLabel)]]</div>
         <paper-menu-button>
           <paper-icon-button icon="icons:expand-more" slot="dropdown-trigger" aria-label$="[[i18n('command.expand')]]">
           </paper-icon-button>
@@ -77,6 +77,7 @@ class Repositories extends mixinBehaviors([I18nBehavior, RoutingBehavior], Nuxeo
         },
       },
       _selected: String,
+      _selectedLabel: String,
     };
   }
 
@@ -90,6 +91,12 @@ class Repositories extends mixinBehaviors([I18nBehavior, RoutingBehavior], Nuxeo
       const defaultRepo = this.repositories.find((r) => r.isDefault);
       if (defaultRepo) {
         repo = defaultRepo.name;
+        this._selectedLabel = defaultRepo.label;
+      }
+    } else {
+      const selectedRepo = this.repositories.find((r) => r.name === repo);
+      if (selectedRepo) {
+        this._selectedLabel = selectedRepo.label;
       }
     }
     this._selected = repo;

@@ -490,7 +490,7 @@ Polymer({
      */
     headers: {
       type: Object,
-      value: { 'fetch-document': 'properties', 'translate-directoryEntry': 'label' },
+      value: { 'fetch-document': 'properties', 'fetch-directoryEntry': 'parent', 'translate-directoryEntry': 'label' },
     },
     /**
      * The schemas passed on to `provider` (like `dublincore`, `uid`, `file`...).
@@ -555,9 +555,14 @@ Polymer({
               const value = params[param];
               if (value !== null && param !== 'dc:title') {
                 if (modifyPayload && Array.isArray(value)) {
-                  result[param] = value.map((item) =>
-                    item && item['entity-type'] ? item.uid || `${item.properties.parent}/${item.id}` : item,
-                  );
+                  result[param] = value.map((item) => {
+                    let output = item.id ? item.id : item;
+                    while (item && item.properties && item.properties.parent) {
+                      output = `${item.properties.parent.id}`.concat('/', `${output}`);
+                      item = item.properties.parent;
+                    }
+                    return output;
+                  });
                 } else {
                   result[param] = typeof value === 'boolean' ? value.toString() : value;
                 }

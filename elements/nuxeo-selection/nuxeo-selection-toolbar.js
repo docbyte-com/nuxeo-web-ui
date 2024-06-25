@@ -138,7 +138,7 @@ Polymer({
           <template is="dom-repeat" items="[[selectedItems]]">
             <div class="layout horizontal center">
               <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
-              <div>[[item.title]]</div>
+              <div>[[displayItem(item)]]</div>
             </div>
           </template>
         </paper-dialog-scrollable>
@@ -172,6 +172,10 @@ Polymer({
       type: Boolean,
       value: false,
     },
+    displayProperty: {
+      type: String,
+      value: 'title',
+    },
     /**
      * XXX - workaround: resultCounts is used to display the number of selected items (instead of selectedItems.length)
      * to support paginable elements that don't know the total number of items.
@@ -183,6 +187,22 @@ Polymer({
   },
 
   observers: ['_observeSelectedItems(selectedItems)'],
+
+  displayItem(item) {
+    // convert indexes to properties
+    let propetyString = this.displayProperty.replace('[', '.');
+    propetyString = propetyString.replace(']', '');
+
+    const propertyArray = propetyString.split('.');
+
+    propertyArray.forEach((property) => {
+      if (property in item) {
+        item = item[property];
+      }
+    });
+
+    return item;
+  },
 
   _observeSelectedItems() {
     this.hidden = !this.selectedItems || this.selectedItems.length === 0;

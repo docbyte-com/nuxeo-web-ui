@@ -15,12 +15,11 @@ phases:
 
   install:
     runtime-versions:
-      nodejs: 16
+      nodejs: 18
       java: corretto17
     commands:
       - aws s3 sync s3://db-dev-buildartifacts/tools/ ~/tools/
       - chmod a+x -R ~/tools/
-      - n 14
       - . ~/tools/prepEnv.sh
       - echo Build Started
 

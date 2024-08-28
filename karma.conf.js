@@ -23,18 +23,18 @@ if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
       platform: 'Windows 10',
       version: 'latest',
     },
-    sl_latest_firefox: {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      platform: 'Windows 10',
-      version: 'latest',
-      geckodriverVersion: '0.30.0',
-    },
     sl_latest_edge: {
       base: 'SauceLabs',
       browserName: 'microsoftedge',
       platform: 'Windows 10',
       version: 'latest',
+    },
+    sl_latest_firefox: {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+      platform: 'Windows 10',
+      version: '98.0',
+      geckodriverVersion: '0.30.0',
     },
     sl_latest_safari: {
       base: 'SauceLabs',
@@ -57,6 +57,7 @@ module.exports = (config) => {
 
   config.set({
     sauceLabs,
+    hostname: '127.0.0.1',
     basePath: '',
     singleRun: true,
     browsers: config.browsers && config.browsers.length > 0 ? config.browsers : Object.keys(customLaunchers),

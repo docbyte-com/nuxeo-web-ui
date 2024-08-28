@@ -108,6 +108,7 @@ Polymer({
       }
 
       .container {
+        min-height: 200px;
         margin: 0 2rem;
         padding: 0;
         display: inline-block;
@@ -159,6 +160,7 @@ Polymer({
       .vertical {
         @apply --layout-flex;
         @apply --layout-vertical;
+        overflow: auto;
       }
 
       iron-pages {

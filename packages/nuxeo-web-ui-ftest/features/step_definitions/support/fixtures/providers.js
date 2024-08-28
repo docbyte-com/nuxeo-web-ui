@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { After } from '@cucumber/cucumber';
 import nuxeo from '../services/client';
 
@@ -43,4 +44,6 @@ fixtures.providers = {
       .then(() => delete global.providers[provider]),
 };
 
-After(() => Promise.all(Object.keys(global.providers).map((provider) => fixtures.providers.delete(provider))));
+After(async () =>
+  Promise.all(Object.keys(global.providers).map(async (provider) => fixtures.providers.delete(provider))),
+);

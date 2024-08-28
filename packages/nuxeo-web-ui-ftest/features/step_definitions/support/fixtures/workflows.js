@@ -1,11 +1,12 @@
-import { After } from '@cucumber/cucumber';
 import Nuxeo from 'nuxeo';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { After } from '@cucumber/cucumber';
 import nuxeo from '../services/client';
 
 global.runningWorkflows = [];
-
+global.fixtures = {};
 fixtures.workflows = {
-  start: (document, workflowModelName, initiator) => {
+  start: async (document, workflowModelName, initiator) => {
     // creating a different client to make sure the initiator of the workflow is the logged-in user
     const client = new Nuxeo({
       auth: {
@@ -21,16 +22,14 @@ fixtures.workflows = {
       attachedDocumentIds: [document.uid],
     };
 
-    return client
-      .workflows()
-      .start(workflowModelName, workflowOptions)
-      .then((workflowInstance) => {
-        runningWorkflows.push(workflowInstance.id);
-        return workflowInstance;
-      });
+    const workflow = await client.workflows().start(workflowModelName, workflowOptions);
+    await runningWorkflows.push(workflow.id);
+    return workflow;
   },
 
-  delete: (workflowInstanceId) => nuxeo.workflows().delete(workflowInstanceId),
+  delete: (workflowInstanceId) => {
+    nuxeo.workflows().delete(workflowInstanceId);
+  },
 
   removeInstance: (workflowInstanceId) => {
     const index = runningWorkflows.indexOf(workflowInstanceId);
@@ -44,9 +43,7 @@ After(() =>
   Promise.all(
     Object.keys(runningWorkflows).map((index) => {
       const workflowInstanceId = runningWorkflows[index];
-      return fixtures.workflows
-        .delete(workflowInstanceId)
-        .then(() => fixtures.workflows.removeInstance(workflowInstanceId));
+      return fixtures.workflows.removeInstance(workflowInstanceId);
     }),
   ),
 );

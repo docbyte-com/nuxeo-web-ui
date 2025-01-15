@@ -64,7 +64,6 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
             color: var(--nuxeo-app-header, #fff);
             text-decoration: none;
             text-transform: uppercase;
-            float: left;
             
           }
 

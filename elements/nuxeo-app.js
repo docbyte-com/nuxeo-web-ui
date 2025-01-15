@@ -605,6 +605,7 @@ Polymer({
 
   listeners: {
     'document-updated': 'refresh',
+    'create-document': '_showDocumentCreationWizard',
     'document-created': '_handleDocumentCreated',
     workflowStarted: '_refreshAndFetchTasks',
     workflowAbandoned: '_refreshAndFetchTasks',
@@ -926,6 +927,19 @@ Polymer({
   _showSuggester(e) {
     e.detail.keyboardEvent.preventDefault();
     this.$.suggester.toggle();
+  },
+
+  _showDocumentCreationWizard(e) {
+    if (e.detail.keyboardEvent) {
+      e.detail.keyboardEvent.preventDefault();
+    }
+    if (e.detail.files) {
+      this.$.importPopup.toggleDialogImport(e.detail.files);
+    } else if (e.detail.type) {
+      this.$.importPopup.toggleDialogCreate(e.detail.type);
+    } else {
+      this.$.importPopup.toggleDialog();
+    }
   },
 
   _navigate(e) {

@@ -97,7 +97,7 @@ limitations under the License.
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="application-name" content="Nuxeo"/>
+  <meta name="application-name" content="Docbyte"/>
 
   <link rel="icon" sizes="32x32" href="images/touch/favicon-32x32.png" type="image/png">
   <link rel="icon" sizes="16x16" href="images/touch/favicon-16x16.png" type="image/png">

@@ -1,6 +1,6 @@
 const config = {
   HomePage: '/browse/archive-domain/archive',
-  ProductName: 'Docbyte Digital Archive',
+  ProductName: 'Docbyte',
 };
 
 export default config;

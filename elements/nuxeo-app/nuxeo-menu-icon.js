@@ -40,6 +40,10 @@ Polymer({
         outline: none;
       }
 
+      :host(:focus-visible) {
+        outline: auto;
+      }
+
       :host(.selected) paper-icon-button {
         color: var(--nuxeo-sidebar-menu-hover);
       }

@@ -43,6 +43,7 @@ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { timeOut } from '@polymer/polymer/lib/utils/async.js';
+import { FormatBehavior } from '@nuxeo/nuxeo-ui-elements/nuxeo-format-behavior.js';
 
 /**
  `nuxeo-search-form`
@@ -432,7 +433,7 @@ Polymer({
   `,
 
   is: 'nuxeo-search-form',
-  behaviors: [NotifyBehavior, I18nBehavior, RoutingBehavior, IronResizableBehavior],
+  behaviors: [NotifyBehavior, I18nBehavior, RoutingBehavior, IronResizableBehavior, FormatBehavior],
   importMeta: import.meta,
 
   properties: {
@@ -490,7 +491,7 @@ Polymer({
      */
     headers: {
       type: Object,
-      value: { 'fetch-document': 'properties', 'translate-directoryEntry': 'label' },
+      value: { 'fetch-document': 'properties', 'fetch-directoryEntry': 'parent', 'translate-directoryEntry': 'label' },
     },
     /**
      * The schemas passed on to `provider` (like `dublincore`, `uid`, `file`...).
@@ -547,14 +548,25 @@ Polymer({
     paramMutator: {
       type: Function,
       value() {
-        return function(params) {
+        return function(params, modifyPayload = false) {
           const result = {};
           if (params) {
             // filter null values
             Object.keys(params).forEach((param) => {
               const value = params[param];
               if (value !== null && param !== 'dc:title') {
-                result[param] = typeof value === 'boolean' ? value.toString() : value;
+                if (modifyPayload && Array.isArray(value)) {
+                  result[param] = value.map((item) => {
+                    let output = item.id ? item.id : item;
+                    while (item && item.properties && item.properties.parent) {
+                      output = `${item.properties.parent.id}`.concat('/', `${output}`);
+                      item = item.properties.parent;
+                    }
+                    return output;
+                  });
+                } else {
+                  result[param] = typeof value === 'boolean' ? value.toString() : value;
+                }
               }
             });
             // allow search to be visible on JSF UI
@@ -768,7 +780,7 @@ Polymer({
     if (this._isSavedSearch()) {
       this.isSavedSearch = true;
       this.selectedSearch = this._searches[this.selectedSearchIdx - 1];
-      this.params = this._mutateParams(this.selectedSearch.params);
+      this.params = this._mutateParams(this.selectedSearch.params, true);
       this._navigateToResults();
     } else {
       this._clear();
@@ -809,6 +821,17 @@ Polymer({
   },
 
   _search() {
+    if (this.form && this.form.searchTerm) {
+      this.set('params.ecm_fulltext', this.formatFulltext(this.form.searchTerm));
+      this.set(
+        'params.highlight',
+        'dc:title.fulltext,ecm:binarytext,dc:description.fulltext,ecm:tag,note:note.fulltext,file:content.name',
+      );
+    } else if (this.params && this.params.ecm_fulltext) {
+      this.set('params.ecm_fulltext', '');
+      delete this.params.ecm_fulltext;
+      delete this.params.highlight;
+    }
     if (this.results && this._validate()) {
       this.results.reset();
       return this._fetch(this.results).then(this._navigateToResults.bind(this));
@@ -927,8 +950,8 @@ Polymer({
     });
   },
 
-  _mutateParams(params) {
-    return this.paramMutator ? this.paramMutator(params) : params;
+  _mutateParams(params, modifyPayload) {
+    return this.paramMutator ? this.paramMutator(params, modifyPayload) : params;
   },
 
   _computeSavedSearchesParams() {

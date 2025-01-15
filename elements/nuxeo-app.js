@@ -543,6 +543,10 @@ Polymer({
       value: '52px',
     },
 
+    sidebarWidth: {
+      type: String,
+    },
+
     drawerOpened: {
       type: Boolean,
       value: false,
@@ -641,7 +645,7 @@ Polymer({
 
   ready() {
     this.$.drawerPanel.closeDrawer();
-
+    this.drawerWidth = this.sidebarWidth = getComputedStyle(this).getPropertyValue('--nuxeo-sidebar-width');
     this.$.drawerPanel.$.drawer.addEventListener('transitionend', () => {
       this.$.drawerPanel.notifyResize();
     });
@@ -1002,7 +1006,8 @@ Polymer({
   },
 
   _openDrawer() {
-    this.drawerWidth = '350px';
+    const pixelsSuffix = 'px';
+    this.drawerWidth = 298 + Math.round(this.sidebarWidth.substring(0, this.sidebarWidth.length - 2)) + pixelsSuffix;
     this.drawerOpened = true;
     const { drawerPanel } = this.$;
     if (drawerPanel.narrow) {
@@ -1018,7 +1023,7 @@ Polymer({
   },
 
   _closeDrawer() {
-    this.drawerWidth = getComputedStyle(document.documentElement).getPropertyValue('--nuxeo-sidebar-width');
+    this.drawerWidth = this.sidebarWidth;
     this.drawerOpened = false;
     this.$.drawerPanel.closeDrawer();
     this.selectedTab = '';

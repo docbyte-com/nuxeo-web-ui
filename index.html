@@ -57,7 +57,10 @@ limitations under the License.
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
     <!-- Content security policy (needs Nuxeo.UI.config.expressions.eval = false) -->
-    <!-- meta http-equiv="Content-Security-Policy" content="img-src data: blob: *; default-src blob: *; script-src data: * 'nonce-dummy'; style-src 'unsafe-inline' *; font-src data: *" -->
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="img-src data: blob: *; default-src blob: *; script-src data: * 'nonce-dummy'; style-src 'unsafe-inline' *; font-src data: *"
+    /> -->
 
     <link rel="stylesheet" type="text/css" href="index.css" />
   </head>
@@ -86,6 +89,10 @@ limitations under the License.
     <script src="vendor/web-animations/web-animations-next-lite.min.js"></script>
 
     <script nonce="dummy">
+
+      function generateNonce(){
+        return window.crypto.randomUUID().toString('base64')
+      }
       /* eslint-disable no-var, no-unused-vars */
       var Nuxeo = {
         UI: {
@@ -125,6 +132,7 @@ limitations under the License.
                 hrefBase: 'elements/search/',
               },
             },
+            nonce: generateNonce()
             /* analytics: {
               documentDistribution: {
                 disableThreshold: 100, // uncomment to set the threshold value that disables the distribution analytics

@@ -193,12 +193,12 @@ const development = merge([
       client: {
         overlay: true,
       },
-      port: 5000,
+      port: process.env.PORT || 5000,
       host: '0.0.0.0',
       historyApiFallback: true,
       proxy: [
         {
-          context: ['/nuxeo'],
+          context: ['/nuxeo', '/core'],
           target: `http://${process.env.NUXEO_HOST || 'localhost:8080'}/`,
         },
       ],

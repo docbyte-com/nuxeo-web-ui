@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run test",
     "test": "HEADLESS=true wdio wdio.conf.js",
-    "test:dev": "NUXEO_WEB_UI_URL=http://localhost:5000/ NUXEO_URL=http://localhost:8080/nuxeo/ wdio wdio.conf.js"
+    "test:dev": "NUXEO_WEB_UI_URL=http://localhost:${PORT:-5000}/ NUXEO_URL=http://localhost:8080/core/ wdio wdio.conf.js"
   },
   "license": "Apache-2.0",
   "dependencies": {

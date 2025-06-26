@@ -98,7 +98,6 @@ import '@nuxeo/nuxeo-ui-elements/nuxeo-data-table/iron-data-table.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-document-comments/nuxeo-document-comment.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-document-comments/nuxeo-document-comment-thread.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-document-permissions/nuxeo-document-permissions.js';
-import '@nuxeo/nuxeo-ui-elements/nuxeo-error.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-filter.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-filters-behavior.js';
 import '@nuxeo/nuxeo-ui-elements/nuxeo-format-behavior.js';

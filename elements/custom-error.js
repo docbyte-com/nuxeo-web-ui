@@ -131,12 +131,12 @@ import { I18nBehavior } from '@nuxeo/nuxeo-ui-elements/nuxeo-i18n-behavior.js';
 
           <div class="error-info">
             <div class="error-field">
-              <div class="error-field-label">[[i18n('error.statusCode.label')]]</div>
+              <div class="error-field-label">[[_getStatusCodeLabel()]]</div>
               <div class="error-field-value">[[code]]</div>
             </div>
 
             <div class="error-field message full-width" hidden$="[[!_hasMessage(code, message)]]">
-              <div class="error-field-label">[[i18n('error.message.label')]]</div>
+              <div class="error-field-label">[[_getMessageLabel()]]</div>
               <div class="error-field-value">
                 [[_computeMessage(code)]]
               </div>
@@ -234,8 +234,6 @@ import { I18nBehavior } from '@nuxeo/nuxeo-ui-elements/nuxeo-i18n-behavior.js';
     _getErrorMessage(code) {
       // Try to get i18n message first
       const i18nMessage = this.code ? this.i18n(`error.${this.code}.message`) : null;
-      // eslint-disable-next-line no-console
-      console.log('i18nMessage', i18nMessage);
       if (i18nMessage && i18nMessage !== `error.${this.code}.message`) {
         return i18nMessage;
       }
@@ -256,6 +254,26 @@ import { I18nBehavior } from '@nuxeo/nuxeo-ui-elements/nuxeo-i18n-behavior.js';
 
     _hasMessage(code, message) {
       return !!(code || message);
+    }
+
+    _getStatusCodeLabel() {
+      // Try to get i18n label first
+      const i18nLabel = this.i18n('error.statusCode.label');
+      if (i18nLabel && i18nLabel !== 'error.statusCode.label') {
+        return i18nLabel;
+      }
+      // Fall back to hardcoded label
+      return 'Status Code';
+    }
+
+    _getMessageLabel() {
+      // Try to get i18n label first
+      const i18nLabel = this.i18n('error.message.label');
+      if (i18nLabel && i18nLabel !== 'error.message.label') {
+        return i18nLabel;
+      }
+      // Fall back to hardcoded label
+      return 'Message';
     }
 
     /**

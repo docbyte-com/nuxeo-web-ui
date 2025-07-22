@@ -47,6 +47,8 @@ Polymer({
         padding: 16px 16px 0 16px;
         margin: 0 var(--nuxeo-body-side-margin);
         background: var(--nuxeo-app-tabs-background);
+        border-top-left-radius: var(--nuxeo-body-top-corner-radius);
+        border-top-right-radius: var(--nuxeo-body-top-corner-radius);
       }
 
       .toolbar {
@@ -75,10 +77,9 @@ Polymer({
         z-index: 1;
 
         margin: 0 var(--nuxeo-body-side-margin);
-        border-top-left-radius:  var(--nuxeo-body-top-corner-radius);
-        border-top-right-radius:  var(--nuxeo-body-top-corner-radius);
+        border-top-left-radius: var(--nuxeo-body-top-corner-radius);
+        border-top-right-radius: var(--nuxeo-body-top-corner-radius);
       }
-      
 
       #header::slotted(*) {
         overflow-x: hidden;

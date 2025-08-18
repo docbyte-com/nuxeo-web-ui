@@ -3,48 +3,48 @@ name: Main
 on:
   push:
     branches:
-      - maintenance-3.1.x
+      - lts-2025
 
   # Manually trigger the workflow
   workflow_dispatch:
 
 jobs:
   lint:
-    uses: nuxeo/nuxeo-web-ui/.github/workflows/lint.yaml@maintenance-3.1.x
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/lint.yaml@lts-2025
     secrets:
       NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
 
   test:
-    uses: nuxeo/nuxeo-web-ui/.github/workflows/test.yaml@maintenance-3.1.x
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/test.yaml@lts-2025
     secrets:
       NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
       SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
     with:
-      branch: maintenance-3.1.x
+      branch: lts-2025
 
   a11y:
-    uses: nuxeo/nuxeo-web-ui/.github/workflows/a11y.yaml@maintenance-3.1.x
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/a11y.yaml@lts-2025
     secrets:
       NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
       PACKAGES_AUTH_USER: ${{ secrets.PACKAGES_AUTH_USER }}
       PACKAGES_AUTH_TOKEN: ${{ secrets.PACKAGES_AUTH_TOKEN }}
     with:
-      branch: maintenance-3.1.x
+      branch: lts-2025
 
   ftest:
-    uses: nuxeo/nuxeo-web-ui/.github/workflows/ftest.yaml@maintenance-3.1.x
+    uses: nuxeo/nuxeo-web-ui/.github/workflows/ftest.yaml@lts-2025
     secrets:
       NPM_PACKAGES_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
       PACKAGES_AUTH_USER: ${{ secrets.PACKAGES_AUTH_USER }}
       PACKAGES_AUTH_TOKEN: ${{ secrets.PACKAGES_AUTH_TOKEN }}
     with:
-      branch: maintenance-3.1.x
+      branch: lts-2025
 
   build:
     needs: [lint, test, a11y, ftest]
     runs-on: [self-hosted, master]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.2.2
 
       - run: git config user.name "nuxeo-webui-jx-bot" && git config user.email "webui@hyland.com"
 
@@ -53,10 +53,10 @@ jobs:
           registry-url: 'https://packages.nuxeo.com/repository/npm-public/'
           scope: '@nuxeo'
 
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
       - name: Prepare environment
         run: |
@@ -70,6 +70,8 @@ jobs:
           echo "VERSION=$(npx semver -i prerelease --preid rc ${RC_VERSION:-$PACKAGE_VERSION}  | tr -d '\n')" >> $GITHUB_ENV
 
       - name: Update versions
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           find . -type f -not -path "./node_modules/*" -regex ".*\.\(yaml\|sample\|xml\)" -exec sed -i 's/'"$PACKAGE_VERSION"'/'"$VERSION"'/g' {} \;
 
@@ -80,6 +82,19 @@ jobs:
           sed -i -e 's/\${project.version}/'"$PADDED_VERSION"'/g' plugin/web-ui/marketplace/pom.xml
 
           npm version ${VERSION} --no-git-tag-version
+
+          # Get latest UI Elements version
+          ELEMENTS_VERSION=$(npm view @nuxeo/nuxeo-ui-elements versions --json | jq -r '.[]' | grep -E "2025\.[0-9]+\.[0-9]+-rc\.[0-9]+$" | sort -V | tail -n1)
+          echo "Latest nuxeo-elements version: $ELEMENTS_VERSION"
+          # Update package.json dependencies and devDependencies
+          jq --arg ver "~$ELEMENTS_VERSION" '
+            .dependencies."@nuxeo/nuxeo-dataviz-elements" = $ver |
+            .dependencies."@nuxeo/nuxeo-elements" = $ver |
+            .dependencies."@nuxeo/nuxeo-ui-elements" = $ver |
+            .devDependencies."@nuxeo/testing-helpers" = $ver
+          ' package.json > tmp.json && mv tmp.json package.json
+          echo "Updated all Nuxeo dependencies to version $ELEMENTS_VERSION"
+
           pushd packages/nuxeo-web-ui-ftest
           npm version ${VERSION} --no-git-tag-version
           popd
@@ -115,7 +130,7 @@ jobs:
           mvn -B -nsu -ntp -f plugin/itests/marketplace install
 
       - name: Archive packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: |

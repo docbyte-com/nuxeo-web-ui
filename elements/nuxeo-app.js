@@ -134,6 +134,9 @@ Polymer({
         --paper-drawer-panel-left-drawer-container: {
           z-index: 100;
         }
+        --paper-drawer-panel-right-drawer-container: {
+          z-index: 100;
+        }
         --paper-drawer-panel-scrim: {
           z-index: 2;
         }
@@ -150,7 +153,6 @@ Polymer({
         width: var(--nuxeo-sidebar-width);
         height: var(--nuxeo-sidebar-logo-height);
         top: var(--nuxeo-app-top);
-        left: 0;
         z-index: 102;
         box-sizing: border-box;
         outline: none;
@@ -161,9 +163,20 @@ Polymer({
         padding: 0.1rem;
       }
 
+      :host([dir='ltr']) #logo {
+        left: 0;
+        right: auto;
+      }
+
       #logo img {
         max-width: var(--nuxeo-sidebar-width);
         max-height: var(--nuxeo-sidebar-logo-img-height);
+      }
+
+      :host([dir='rtl']) #logo {
+        right: 0px;
+        height: 53px;
+        left: auto;
       }
 
       /* menu */
@@ -221,6 +234,11 @@ Polymer({
         cursor: pointer;
       }
 
+      :host([dir='rtl']) #drawer .toggle {
+        left: -16px;
+        right: auto;
+      }
+
       #drawer .toggle iron-icon {
         visibility: hidden;
         color: var(--nuxeo-drawer-background);
@@ -243,6 +261,11 @@ Polymer({
         height: calc(100vh - (var(--nuxeo-app-top, 0) + var(--nuxeo-app-bottom, 0)));
         margin-left: var(--nuxeo-sidebar-width);
         background-color: var(--nuxeo-drawer-background);
+      }
+
+      :host([dir='rtl']) #drawer iron-pages {
+        margin-right: var(--nuxeo-sidebar-width);
+        margin-left: 0;
       }
 
       #drawer nuxeo-menu-item:hover,
@@ -280,6 +303,10 @@ Polymer({
         background-color: var(--nuxeo-drawer-background);
       }
 
+      :host([dir='rtl']) #drawerToggle {
+        right: 6px;
+      }
+
       nuxeo-document-create-button.admin {
         display: none;
       }
@@ -293,6 +320,13 @@ Polymer({
         margin-left: 50px;
       }
 
+      :host([dir='rtl']) #snackbarPanel {
+        left: auto;
+        right: 0px;
+        margin-right: 50px;
+        margin-left: 0px;
+      }
+
       mwc-snackbar {
         position: relative !important;
         left: 0 !important;
@@ -303,6 +337,11 @@ Polymer({
         justify-content: space-between;
         color: white;
         --mdc-typography-body2-font-size: 14px;
+      }
+
+      :host([dir='rtl']) mwc-snackbar {
+        right: 0 !important;
+        left: auto !important;
       }
     </style>
 
@@ -333,6 +372,7 @@ Polymer({
       drawer-width="[[drawerWidth]]"
       responsive-width="720px"
       edge-swipe-sensitivity="0"
+      right-drawer$="[[_isRTL]]"
     >
       <div slot="drawer" role="list">
         <!-- logo -->
@@ -404,7 +444,7 @@ Polymer({
           </iron-pages>
 
           <div class="toggle" on-tap="_closeDrawer" hidden$="[[!drawerOpened]]">
-            <iron-icon icon="icons:chevron-left"></iron-icon>
+            <iron-icon icon="[[toggleChevronIcon]]"></iron-icon>
           </div>
         </div>
       </div>
@@ -602,6 +642,13 @@ Polymer({
     _routedSearch: {
       type: Object,
     },
+
+    _isRTL: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true,
+      observer: '_directionChanged',
+    },
   },
 
   listeners: {
@@ -646,6 +693,7 @@ Polymer({
   ],
 
   ready() {
+    this._checkRtl();
     this.$.drawerPanel.closeDrawer();
     this.drawerWidth = this.sidebarWidth = getComputedStyle(this).getPropertyValue('--nuxeo-sidebar-width');
     this.$.drawerPanel.$.drawer.addEventListener('transitionend', () => {
@@ -678,6 +726,21 @@ Polymer({
     this.$.menu.addEventListener('keyup', (event) => {
       this._toggleDrawer(event, { detail: { selected: event.target.getAttribute('name') } });
     });
+  },
+
+  _checkRtl() {
+    const dir = document.documentElement.getAttribute('dir');
+    this._isRTL = dir === 'rtl';
+  },
+
+  _directionChanged(isRTL) {
+    if (isRTL) {
+      this.$.drawerPanel.setAttribute('right-drawer', '');
+      this.toggleChevronIcon = 'icons:chevron-right';
+    } else {
+      this.$.drawerPanel.removeAttribute('right-drawer');
+      this.toggleChevronIcon = 'icons:chevron-left';
+    }
   },
 
   _resetTaskSelection() {

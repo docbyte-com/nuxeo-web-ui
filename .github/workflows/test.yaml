@@ -3,12 +3,12 @@ name: Test
 on:
   pull_request:
     branches:
-      - maintenance-3.1.x
+      - lts-2025
   workflow_call:
     inputs:
       branch:
         description: 'The current branch'
-        default: maintenance-3.1.x
+        default: lts-2025
         type: string
         required: false
     secrets:
@@ -20,7 +20,7 @@ on:
         required: true
 
 env:
-  BRANCH_NAME: ${{ github.head_ref || inputs.branch || 'maintenance-3.1.x' }}
+  BRANCH_NAME: ${{ github.head_ref || inputs.branch || 'lts-2025' }}
 
 jobs:
   unit-test:
@@ -34,12 +34,17 @@ jobs:
         with:
           registry-url: 'https://packages.nuxeo.com/repository/npm-public/'
           scope: '@nuxeo'
-          node-version: 18
+          node-version: 22
+
+      - name: delete cache
+        run: npm cache clean -f
 
       - name: Install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm install
+        run: |
+          npm cache clean --force
+          npm install
 
       - name: Unit tests
         env:

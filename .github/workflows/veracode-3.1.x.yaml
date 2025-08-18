@@ -51,9 +51,9 @@ jobs:
       id: pick_nuxeo_elements_branch
       run: |
           if git ls-remote --exit-code --heads https://github.com/nuxeo/nuxeo-elements ${{ env.BRANCH_NAME }}; then
-            echo ::set-output name=branch::${{ env.BRANCH_NAME }}
+            echo "branch=${{ env.BRANCH_NAME }}" >> $GITHUB_OUTPUT
           else
-            echo ::set-output name=branch::${{ env.REFERENCE_BRANCH }}
+            echo "branch=${{ env.REFERENCE_BRANCH }}" >> $GITHUB_OUTPUT
           fi
     - name: Install Web UI
       env:
@@ -145,7 +145,7 @@ jobs:
         zip -r nuxeo-web-ui.zip *
 
     - name: Upload ZIP as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nuxeo-web-ui
         path: nuxeo-web-ui.zip
@@ -159,7 +159,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nuxeo-web-ui
           path: .

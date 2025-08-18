@@ -109,6 +109,7 @@ const template = html`
 
         paper-button + paper-button {
           margin-left: 8px;
+          margin-right: 8px;
         }
 
         paper-textarea {
@@ -284,6 +285,14 @@ const template = html`
           box-shadow: 5px 0 0 0 var(--nuxeo-primary-color) inset;
         }
 
+        [dir='rtl'] {
+          --nuxeo-block-selected: {
+            background-color: var(--nuxeo-box);
+            outline: 0;
+            box-shadow: -5px 0 0 0 var(--nuxeo-primary-color) inset;
+          }
+        }
+
         --nuxeo-card-margin-bottom: 16px;
 
         --nuxeo-card: {
@@ -298,7 +307,7 @@ const template = html`
 
         --nuxeo-label: {
           display: block;
-          opacity: 0.7;
+          opacity: 0.9;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -393,6 +402,7 @@ const template = html`
         --nx-button-secondary-hover: {
           border: 1px solid var(--nuxeo-secondary-color, #1f28bf);
           color: var(--nuxeo-secondary-color, #1f28bf);
+          box-shadow: 0 0 0 2px var(--nuxeo-secondary-color, #1f28bf);
         }
 
         --nx-button-secondary-disabled: {
@@ -568,6 +578,13 @@ const template = html`
         --nuxeo-suggester-bar: {
           position: relative;
           top: var(--nuxeo-app-top);
+        }
+
+        :host([dir='rtl']) {
+          --nuxeo-suggester-button: {
+            left: 0;
+            right: auto;
+          }
         }
 
         --nuxeo-suggester-width: 65%;

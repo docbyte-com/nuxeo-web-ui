@@ -182,7 +182,7 @@ Polymer({
       <!--Stage: allow user to choose a doc type-->
       <div name="choose" class="vertical">
         <div class="container">
-          <div class="suggester">
+          <div class="suggester" hidden$="[[hideLocation]]">
             <nuxeo-path-suggestion
               id="pathSuggesterChoose"
               value="{{targetPath}}"
@@ -231,7 +231,7 @@ Polymer({
         </div>
         <div id="editor" class="container">
           <paper-dialog-scrollable id="editScrollable">
-            <div class="suggester">
+            <div class="suggester" hidden$="[[hideLocation]]">
               <nuxeo-path-suggestion
                 id="pathSuggesterEdit"
                 value="{{targetPath}}"
@@ -261,7 +261,7 @@ Polymer({
               >[[i18n('command.cancel')]]</paper-button
             >
           </div>
-          <paper-button class="secondary" noink on-tap="_back" disabled$="[[creating]]"
+          <paper-button class="secondary" noink on-tap="_back" disabled$="[[creating]]" hidden$="[[hideBackButton]]"
             >[[i18n('command.back')]]</paper-button
           >
           <paper-button
@@ -305,6 +305,19 @@ Polymer({
       type: Boolean,
       value: false,
       readOnly: true,
+    },
+
+    // New optional flags
+    hideLocation: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true,
+    },
+
+    hideBackButton: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true,
     },
   },
 

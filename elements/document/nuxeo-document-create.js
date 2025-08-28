@@ -126,8 +126,8 @@ Polymer({
       }
 
       .heading {
-        font-size: 1.1rem;
-        padding: 1.7rem 2.5rem;
+        font-size: 1.5rem;
+        padding: 1.8rem 2rem;
       }
 
       .heading iron-icon {
@@ -225,8 +225,7 @@ Polymer({
 
       <!--Stage: allow user to fill in the properties for the selected type and create a new document-->
       <div name="edit" class="vertical layout flex">
-        <div class="horizontal layout heading center">
-          <iron-icon src="[[_getTypeIcon(selectedDocType)]]"></iron-icon>
+        <div class="horizontal layout heading left">
           <span>[[_newDocumentLabel(selectedDocType)]]</span>
         </div>
         <div id="editor" class="container">

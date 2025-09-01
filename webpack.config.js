@@ -169,7 +169,7 @@ const common = merge([
         process: 'process',
       }),
       new HtmlWebpackPlugin({
-        title: 'Nuxeo',
+        title: 'Vault Admin',
         template: 'index.html',
         chunks: ['main'],
         nuxeo: {

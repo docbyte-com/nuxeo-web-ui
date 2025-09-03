@@ -138,13 +138,10 @@ Polymer({
   },
 
   _href() {
-    if (!this.route) {
-      return;
-    }
     if (this.link) {
       return this.link;
     }
-    if (this.urlFor) {
+    if (this.route && this.urlFor) {
       const parts = this.route.split(':');
       const name = parts[0];
       const args = (parts[1] && parts[1].split('/')) || [];

@@ -361,10 +361,10 @@ Polymer({
             </nuxeo-menu-icon>
           </template>
           <nuxeo-menu-icon
-            name="profile"
-            src="[[currentUser.contextParameters.userprofile.avatar.data]]"
-            icon="nuxeo:user-settings"
-            label="app.account"
+            name="logout"
+            icon="icons:exit-to-app"
+            label="app.user.signOut"
+            link="[[_logout(url)]]"
             class="settings"
           >
           </nuxeo-menu-icon>
@@ -392,15 +392,7 @@ Polymer({
               </div>
             </template>
 
-            <div name="profile" class="layout vertical">
-              <div class="header">
-                <h5>[[_displayUser(currentUser)]]</h5>
-              </div>
-              <iron-selector selected="{{selectedProfileTab}}" attr-for-selected="name">
-                <nuxeo-slot name="USER_MENU" model="[[actionContext]]"></nuxeo-slot>
-                <nuxeo-menu-item name="logout" label="app.user.signOut" link="[[_logout(url)]]"></nuxeo-menu-item>
-              </iron-selector>
-            </div>
+            <!-- profile drawer page removed in fork: replaced with logout button in sidebar -->
           </iron-pages>
 
           <div class="toggle" on-tap="_closeDrawer" hidden$="[[!drawerOpened]]">

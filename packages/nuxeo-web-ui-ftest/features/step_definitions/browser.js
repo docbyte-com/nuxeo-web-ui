@@ -151,12 +151,13 @@ Then('I can move selection up', async function() {
 });
 
 Then('I can see the {string} child document is at position {int}', async function(title, pos) {
-  await driver.pause(1000);
   const browser = await this.ui.browser;
   await browser.waitForVisible();
-  const childIndex = await browser.indexOfChild(title);
-  if (childIndex !== pos - 1) {
-    throw new Error(`${title} child document not present at expected position`);
+  const index = await browser.indexOfChild(title);
+  const actualPos = index + 1;
+  if (actualPos !== pos) {
+    throw new Error(`${title} child document not present at expected position ${pos},
+      but found at position ${actualPos}`);
   }
 });
 
@@ -200,19 +201,20 @@ Then(/^I can see the document has the following publication$/, async function(ta
 
 Then(/^I can republish the following publication$/, async function(table) {
   const rows = table.hashes();
+  const browser = await this.ui.browser;
+  const publicationView = await browser.publicationView;
   for (let i = 0; i < rows.length; i++) {
     const { path, rendition, version } = rows[i];
-    let pubRow = await this.ui.browser.publicationView.getPublicationRow(path, rendition);
+    let pubRow = await publicationView.getPublicationRow(path, rendition);
     if (!pubRow) {
       return false;
     }
     const ele = await pubRow.$('nuxeo-data-table-cell .version').getText();
     const previousVersion = parseFloat(ele.trim().toLowerCase());
-    const browser = await this.ui.browser;
-    const publicationView = await browser.publicationView;
     await publicationView.republish(path, rendition, version);
     pubRow = await publicationView.getPublicationRow(path, rendition);
-    const eleNew = await pubRow.$('nuxeo-data-table-cell .version').getText();
+    const versionElement = await pubRow.$('nuxeo-data-table-cell .version');
+    const eleNew = await versionElement.getText();
     const newVersion = parseFloat(eleNew.trim().toLowerCase());
     if (Number.isNaN(newVersion)) {
       throw new Error('Failed to republish the document');
@@ -232,17 +234,18 @@ Then('I can publish selection to {string}', async function(target) {
 });
 
 Then(/^I can perform the following publications$/, async function(table) {
-  let page = await this.ui.browser.documentPage(this.doc.type);
+  const browser = await this.ui.browser;
+  let page = await browser.documentPage(this.doc.type);
   await page.waitForVisible();
   let pubCount = await page.publicationsCount;
-  pubCount.should.not.be.NaN;
-  const rows = table.hashes();
+  await pubCount.should.not.be.NaN;
+  const rows = await table.hashes();
   for (let i = 0; i < rows.length; i++) {
-    const { target, rendition, version, override } = rows[i];
-    const dialog = await this.ui.browser.publishDialog;
+    const { target, rendition, version, override } = await rows[i];
+    const dialog = await browser.publishDialog;
     const isdocumentPublished = await dialog.publish(target, rendition, version, override);
-    isdocumentPublished.should.be.true;
-    page = await this.ui.browser.documentPage(this.doc.type);
+    await isdocumentPublished.should.be.true;
+    page = await browser.documentPage(this.doc.type);
     const newCount = await page.publicationsCount;
     let check;
     const bar = await page.isVisible('#versionInfoBar');
@@ -265,7 +268,7 @@ Then('I can delete all the documents from the {string} collection', async functi
 });
 
 Then('I can see the browser title as {string}', async (title) => {
-  await driver.pause(1000);
+  await driver.pause(2000);
   const browserTitle = await browser.getTitle();
   if (title !== browserTitle) {
     throw new Error(`Expected text to be ${title} but not found`);

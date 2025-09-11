@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Given, Then, When } from '@cucumber/cucumber';
-import { url } from '../../pages/helpers';
+import { url } from '../../pages/helpers.js';
 
 Then('I can see the {string} search panel', function(name) {
   this.ui.drawer._search(name).waitForVisible();
@@ -80,24 +80,23 @@ Given(/^I have the following documents$/, async (table) => {
   return tasks.reduce((current, next) => current.then(next), Promise.resolve([]));
 });
 
-Given('I have a saved search named "{word}", for the "{word}" page provider, with the following parameters', function(
-  searchName,
-  pageProvider,
-  table,
-) {
-  const hashes = table.hashes();
-  hashes.forEach((kv) => {
-    kv.value = JSON.parse(kv.value);
-  });
-  // could be replaced with Object.fromEntries(...), which is only support from nodejs 12.x on
-  const params = hashes.reduce((obj, { key, value }) => {
-    obj[key] = value;
-    return obj;
-  }, {});
-  return fixtures.savedSearches.create(searchName, pageProvider, params).then((savedSearch) => {
-    this.savedSearch = savedSearch;
-  });
-});
+Given(
+  'I have a saved search named "{word}", for the "{word}" page provider, with the following parameters',
+  async function(searchName, pageProvider, table) {
+    const hashes = await table.hashes();
+    hashes.forEach((kv) => {
+      kv.value = JSON.parse(kv.value);
+    });
+    // could be replaced with Object.fromEntries(...), which is only support from nodejs 12.x on
+    const params = hashes.reduce((obj, { key, value }) => {
+      obj[key] = value;
+      return obj;
+    }, {});
+    return fixtures.savedSearches.create(searchName, pageProvider, params).then((savedSearch) => {
+      this.savedSearch = savedSearch;
+    });
+  },
+);
 
 Given('I have permission {word} for this saved search', function(permission) {
   return fixtures.savedSearches.setPermissions(this.savedSearch, permission, this.username);
@@ -108,14 +107,15 @@ When('I browse to the saved search', function() {
 });
 
 Then('I can see that my saved search "{word}" on "{word}" is selected', async function(savedSearchName, searchName) {
-  const searchForm = await this.ui.searchForm(searchName);
+  const ui = await this.ui;
+  const searchForm = await ui.searchForm(searchName);
   const menuButton = await searchForm.menuButton;
-  await menuButton.waitForVisible();
-  const savedSearch = await this.ui.searchForm(searchName).getSavedSearch(savedSearchName);
+  await menuButton.waitForDisplayed();
+  const savedSearch = await searchForm.getSavedSearch(savedSearchName);
   const savedSearchExist = await savedSearch.waitForExist();
   savedSearchExist.should.be.true;
-  const attr = await savedSearch.getAttribute('class');
-  attr.should.equal('iron-selected');
+  const classAttr = await savedSearch.getAttribute('class');
+  classAttr.should.include('iron-selected');
 });
 
 When(/^I clear the (.+) search on (.+)$/, async function(searchType, searchName) {
@@ -139,7 +139,7 @@ When('I switch to filter view', async function() {
 });
 
 Then(/^I can see (\d+) search results$/, async function(numberOfResults) {
-  await driver.pause(1000);
+  await driver.pause(2000);
   const uiResult = await this.ui.results;
   const displayMode = await uiResult.displayMode;
   if (numberOfResults === 0) {

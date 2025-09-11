@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to promote (e.g.: 3.1.2-rc.2)'
+        description: 'Version to promote (e.g.: 2025.1.0-rc.2)'
         required: true
       referenceBranch:
         description: 'Branch to be updated after the promotion'
         required: true
-        default: 'maintenance-3.1.x'
+        default: 'lts-2025'
       dryRun:
         description: 'Run the workflow without pushing code or publishing artifacts'
         type: boolean
@@ -21,18 +21,19 @@ jobs:
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 22
           registry-url: 'https://packages.nuxeo.com/repository/npm-public/'
           scope: '@nuxeo'
 
       - uses: actions/checkout@v2
         with:
           ref: v${{ github.event.inputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GIT_ADMIN_TOKEN }}
 
       - run: git config user.name "nuxeo-webui-jx-bot" && git config user.email "webui@hyland.com"
 
-      - run: echo "VERSION=$(echo '${{ github.event.inputs.version }}' | sed -e 's/-rc.[0-9]*//')" >> $GITHUB_ENV
+      # Extract VERSION from the new format 2025.x.0-rc.y to get 2025.x.0
+      - run: echo "VERSION=$(echo '${{ github.event.inputs.version }}' | sed -E 's/-rc\.[0-9]+//')" >> $GITHUB_ENV
 
       - name: Update Nuxeo Web UI version to ${{ env.VERSION }}
         env:
@@ -82,17 +83,34 @@ jobs:
 
       - name: Promote Web UI ${{ github.event.inputs.version }} to ${{ env.VERSION }}
         env:
-          PACKAGE: nuxeo-web-ui-${{ env.VERSION }} 
+          PACKAGE: nuxeo-web-ui-${{ env.VERSION }}
           CONNECT_PREPROD_URL: https://nos-preprod-connect.nuxeocloud.com/nuxeo
         run: |
           PADDED=$(printf '%03d' $(echo ${{ github.event.inputs.version }} | sed -r s/[0-9]+\.[0-9]+\.[0-9]+-rc\.\([0-9]+\)/\\1/g))
           PADDED_VERSION=$(echo ${{ github.event.inputs.version }} | sed -E "s/([0-9]+\.[0-9]+\.[0-9]+-rc\.)[0-9]+/\\1$PADDED/g")
           curl -o $PACKAGE.zip -L -u "${{ secrets.CONNECT_PREPROD_AUTH }}" "$CONNECT_PREPROD_URL/site/marketplace/package/nuxeo-web-ui/download?version=$PADDED_VERSION"
+          # Extract and remove RC from package.xml
           unzip -d $PACKAGE $PACKAGE.zip && rm $PACKAGE.zip
           pushd $PACKAGE
           sed -i 's/-rc.[0-9]*//' package.xml
-          for f in install/bundles/*.jar; do mv $f $(echo $f | sed -e 's/-rc.[0-9]*//'); done
-          zip -r ../$PACKAGE.zip .
+          # Process each JAR file properly
+          for jarfile in install/bundles/*.jar; do
+            # Create temp directory
+            tempdir=$(mktemp -d)
+            
+            # Extract JAR contents
+            unzip "$jarfile" -d "$tempdir"
+            
+            # Remove RC from version in pom files
+            find "$tempdir/META-INF/maven" -type f \( -name "pom.xml" -o -name "pom.properties" \) -exec sed -i 's/-rc.[0-9]*//' {} \;
+            
+            # Recreate JAR in place (keeping original filename)
+            (cd "$tempdir" && zip -qr "$OLDPWD/$jarfile" .)
+            
+            # Cleanup
+            rm -rf "$tempdir"
+          done
+          zip -qr ../$PACKAGE.zip .
           popd
 
       - name: Push promoted Web UI to Connect PREPROD
@@ -118,7 +136,7 @@ jobs:
         run: echo "NEW_VERSION=$(npx semver -i minor $VERSION)" >> $GITHUB_ENV
 
       - if: ${{ github.event.inputs.referenceBranch != 'master' }}
-        run: echo "NEW_VERSION=$(npx semver -i patch $VERSION)" >> $GITHUB_ENV
+        run: echo "NEW_VERSION=$(npx semver -i minor $VERSION)" >> $GITHUB_ENV
 
       - name: Align ${{ github.event.inputs.referenceBranch }} branch on next version ${{ env.NEW_VERSION }}-SNAPSHOT
         env:

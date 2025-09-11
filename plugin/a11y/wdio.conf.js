@@ -1,30 +1,32 @@
-const { execSync } = require('child_process');
-const CompatService = require('@nuxeo/nuxeo-web-ui-ftest/wdio-compat-plugin');
-const ShadowService = require('@nuxeo/nuxeo-web-ui-ftest/wdio-shadow-plugin');
+import { execSync } from 'child_process';
+import CompatService from '@nuxeo/nuxeo-web-ui-ftest/wdio-compat-plugin.js';
+import ShadowService from '@nuxeo/nuxeo-web-ui-ftest/wdio-shadow-plugin.js';
 
 const debug = process.env.DEBUG;
 const debugTimeout = 24 * 60 * 60 * 1000;
 const timeout = 240000;
 
-require('@babel/register')({
-  presets: [
-    [
-      '@babel/env',
-      {
-        targets: {
-          node: 'current',
+import('@babel/register').then(({ default: register }) => {
+  register({
+    presets: [
+      [
+        '@babel/env',
+        {
+          targets: {
+            node: 'current',
+          },
         },
-      },
+      ],
     ],
-  ],
-  ignore: [/node_modules\/(?!@nuxeo\/nuxeo-web-ui-ftest)/],
+    ignore: [/node_modules\/(?!@nuxeo\/nuxeo-web-ui-ftest)/],
+  });
 });
 
 const capability = {
   maxInstances: 1,
   browserName: 'chrome',
   acceptInsecureCerts: true,
-  browserVersion: 'stable',
+  browserVersion: '135.0.7049.114',
 };
 const options = {
   args: ['--no-sandbox'],
@@ -55,7 +57,7 @@ if (process.env.DRIVER_VERSION) {
   drivers.chrome.version = process.env.DRIVER_VERSION;
 }
 
-exports.config = {
+export const config = {
   execArgv: debug ? ['--inspect'] : [],
   //
   // ====================

@@ -40,6 +40,10 @@ Polymer({
         font-weight: 700;
       }
 
+      :host-context([dir='rtl']) {
+        margin: 0 16px 0 16px;
+      }
+
       :host(:hover) {
         border-bottom: 2px solid var(--nuxeo-app-header-pill-hover);
         color: var(--nuxeo-app-header-pill-hover);

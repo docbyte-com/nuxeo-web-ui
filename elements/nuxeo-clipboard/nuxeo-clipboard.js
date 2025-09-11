@@ -31,6 +31,7 @@ import '@nuxeo/nuxeo-ui-elements/nuxeo-document-thumbnail/nuxeo-document-thumbna
 import '../nuxeo-document-storage/nuxeo-document-storage.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import { handleVerticalKeyNavigation } from '../common-utils.js';
 
 /**
 `nuxeo-clipboard`
@@ -118,7 +119,7 @@ Polymer({
       }
 
       .tip {
-        opacity: 0.5;
+        opacity: 0.7;
         display: block;
         font-weight: 300;
         padding: 8px;
@@ -151,7 +152,7 @@ Polymer({
         empty-label-when-filtered="[[i18n('clipboard.empty')]]"
       >
         <template>
-          <div tabindex$="{{tabIndex}}" class$="[[_computedClass(selected)]]">
+          <div tabindex="0" class$="[[_computedClass(selected)]]" on-keydown="_handleKeyNav">
             <div class="list-item-box">
               <div class="list-item-info">
                 <div class="list-item-thumbnail">
@@ -160,7 +161,14 @@ Polymer({
                 <div class="list-item-title">
                   [[_title(document)]]
                 </div>
-                <iron-icon class="remove" icon="nuxeo:remove" alt="Remove" on-tap="_remove"></iron-icon>
+                <iron-icon
+                  class="remove"
+                  icon="nuxeo:remove"
+                  alt="Remove"
+                  on-tap="_remove"
+                  on-keydown="_removeKeydown"
+                  tabindex="0"
+                ></iron-icon>
               </div>
             </div>
           </div>
@@ -317,5 +325,19 @@ Polymer({
       classes += ' selected';
     }
     return classes;
+  },
+
+  _handleKeyNav(e) {
+    handleVerticalKeyNavigation(e, '.list-item');
+  },
+
+  _removeKeydown(evt) {
+    if (evt && evt.type === 'keydown') {
+      const { key } = evt;
+      if (key !== 'Enter' && key !== ' ' && key !== 'Spacebar') {
+        return;
+      }
+      this._remove(evt);
+    }
   },
 });

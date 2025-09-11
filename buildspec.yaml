@@ -1,9 +1,5 @@
 version: 0.2
 env:
-  secrets-manager:
-    SONAR_USER: "SonarQubeUserSecretNew-wL3Hp9jD2h96:username"
-    SONAR_PASSWORD: "SonarQubeUserSecretNew-wL3Hp9jD2h96:password"
-    SONAR_ACCESS_TOKEN: "SonarQubeUserSecretNew-wL3Hp9jD2h96:access_token"
   variables:
     CHANGELIST: "-SNAPSHOT"
     AWS_ACCOUNT_ID: "518241560725"

@@ -3,8 +3,6 @@ env:
   variables:
     CHANGELIST: "-SNAPSHOT"
     AWS_ACCOUNT_ID: "518241560725"
-    SONAR_HOST: "http://54.229.164.107:9000"
-    SONAR_PROJECT_KEY: "nuxeo-web-ui"
 
 
 phases:
@@ -52,5 +50,4 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Deployment done `date`
-    finally:
-      - . ~/tools/codebuild-build-result.sh
+

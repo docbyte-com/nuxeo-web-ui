@@ -64,7 +64,6 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
             color: var(--nuxeo-app-header, #fff);
             text-decoration: none;
             text-transform: uppercase;
-            
           }
 
           .current-icon iron-icon {
@@ -188,9 +187,11 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
     _setBreadcrumbElements() {
       const ancestors = this._ancestors;
       this.deletedNodes = [];
-      if (ancestors && this._breadcrumbs) {
+      if (ancestors) {
+        // Always clear, even when there are no breadcrumb entries
         ancestors.innerHTML = '';
-        this._breadcrumbs.forEach((element) => {
+        const crumbs = this._breadcrumbs || [];
+        crumbs.forEach((element) => {
           const listItem = document.createElement('li');
 
           const anchor = document.createElement('a');
@@ -255,7 +256,8 @@ import { microTask } from '@polymer/polymer/lib/utils/async.js';
       }
     }
 
-    _hasIcon(document, url){
+    _hasIcon(document, url) {
+      // eslint-disable-next-line no-undef
       return _icon(document, url) !== null && _icon(document, url) !== undefined && _icon(document, url) !== '';
     }
 

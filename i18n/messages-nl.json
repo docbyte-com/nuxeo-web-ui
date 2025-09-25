@@ -482,7 +482,7 @@
   "documentPage.process.task.later": "Later verwerken",
   "documentPage.process.task": "Verwerken",
   "documentPage.process.title": "Verwerken",
-  "documentPage.retainUntil": "Het document is onder onderbewaarde tot {0}",
+  "documentPage.retainUntil": "Het document is onder retentie tot {0}",
   "documentPage.retainIndeterminate": "Het document is onder onbepaalde retentie",
   "documentPage.route.noTasks": "Geen taken.",
   "documentPage.route.view.graph": "Grafiek weergeven",

@@ -72,26 +72,6 @@ Polymer({
         color: var(--nuxeo-link-hover-color);
       }
 
-      .thumbnailContainer {
-        background-color: rgba(0, 0, 0, 0.1);
-        width: 10rem;
-        height: 10rem;
-        position: relative;
-      }
-
-      .thumbnailContainer img {
-        height: auto;
-        width: auto;
-        max-height: 100%;
-        max-width: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-      }
-
       .dataContainer {
         padding: 0.5rem 1rem;
       }
@@ -143,7 +123,6 @@ Polymer({
         left: 0;
         right: 0;
         min-height: 2.5em;
-        width: 10rem;
       }
 
       .listBox:hover .actions,
@@ -187,17 +166,10 @@ Polymer({
       nuxeo-document-highlights {
         font-size: 0.85rem;
       }
-
-      .vignette {
-        display: flex;
-      }
     </style>
 
     <div class="listBox grid-box" selection-mode$="[[selectionMode]]">
       <div class="horizontal layout">
-        <div class="vignette thumbnailContainer" on-tap="handleClick">
-          <img src="[[_thumbnail(doc)]]" alt$="[[doc.title]]" />
-        </div>
         <div class="dataContainer flex" on-tap="handleClick">
           <div class="horizontal layout center">
             <a class="title flex">
@@ -254,29 +226,6 @@ Polymer({
   },
 
   observers: ['_selectedItemsChanged(selectedItems.splices)'],
-
-  _thumbnail(doc) {
-    if (
-      doc &&
-      doc.uid &&
-      doc.contextParameters &&
-      doc.contextParameters.thumbnail &&
-      doc.contextParameters.thumbnail.url
-    ) {
-      if (!this.isFollowRedirectEnabled()) {
-        const splitter = doc.contextParameters.thumbnail.url.indexOf('?') > -1 ? '&' : '?';
-        doc.contextParameters.thumbnail.url = `${doc.contextParameters.thumbnail.url}${splitter}clientReason=view`;
-      }
-      return doc.contextParameters.thumbnail.url;
-    }
-    return '';
-  },
-
-  isFollowRedirectEnabled() {
-    const followRedirect =
-      Nuxeo && Nuxeo.UI && Nuxeo.UI.config && Nuxeo.UI.config.url && Nuxeo.UI.config.url.followRedirect;
-    return followRedirect ? String(followRedirect).toLowerCase() === 'true' : false;
-  },
 
   handleClick(e) {
     if (this.selectionMode) {

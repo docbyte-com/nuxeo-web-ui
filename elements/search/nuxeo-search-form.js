@@ -37,7 +37,6 @@ import '@nuxeo/nuxeo-ui-elements/nuxeo-quick-filters/nuxeo-quick-filters.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-dialog.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-select.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-tooltip.js';
-import '@nuxeo/nuxeo-ui-elements/nuxeo-document-thumbnail/nuxeo-document-thumbnail.js';
 import '@nuxeo/nuxeo-ui-elements/search/nuxeo-search-form-layout.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
@@ -349,9 +348,6 @@ Polymer({
               <div tabindex$="{{tabIndex}}" class$="[[_computedClass(selected)]]">
                 <div class="list-item-box">
                   <div class="list-item-info" role="listitem" aria-selected="true">
-                    <div class="vertical layout center">
-                      <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
-                    </div>
                     <span class="list-item-title ellipsis">[[item.title]]</span>
                   </div>
                 </div>

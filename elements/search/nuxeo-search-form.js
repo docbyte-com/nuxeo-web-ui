@@ -37,6 +37,7 @@ import '@nuxeo/nuxeo-ui-elements/nuxeo-quick-filters/nuxeo-quick-filters.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-dialog.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-select.js';
 import '@nuxeo/nuxeo-ui-elements/widgets/nuxeo-tooltip.js';
+import '@nuxeo/nuxeo-ui-elements/nuxeo-document-thumbnail/nuxeo-document-thumbnail.js';
 import '@nuxeo/nuxeo-ui-elements/search/nuxeo-search-form-layout.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
@@ -348,6 +349,11 @@ Polymer({
               <div tabindex$="{{tabIndex}}" class$="[[_computedClass(selected)]]">
                 <div class="list-item-box">
                   <div class="list-item-info" role="listitem" aria-selected="true">
+                    <template is="dom-if" if="[[showThumbnails]]">
+                      <div class="vertical layout center">
+                        <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
+                      </div>
+                    </template>
                     <span class="list-item-title ellipsis">[[item.title]]</span>
                   </div>
                 </div>
@@ -438,6 +444,14 @@ Polymer({
   importMeta: import.meta,
 
   properties: {
+    /**
+     * Whether to show thumbnails in search results.
+     * Can be set from parent via the show-thumbnails attribute.
+     */
+    showThumbnails: {
+      type: Boolean,
+      value: false,
+    },
     /**
      * @ignore
      * The selected saved search.

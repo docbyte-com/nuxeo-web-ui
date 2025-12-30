@@ -195,9 +195,11 @@ Polymer({
 
     <div class="listBox grid-box" selection-mode$="[[selectionMode]]">
       <div class="horizontal layout">
-        <div class="vignette thumbnailContainer" on-tap="handleClick">
-          <img src="[[_thumbnail(doc)]]" alt$="[[doc.title]]" />
-        </div>
+        <template is="dom-if" if="[[showThumbnails]]">
+          <div class="vignette thumbnailContainer" on-tap="handleClick">
+            <img src="[[_thumbnail(doc)]]" alt$="[[doc.title]]" />
+          </div>
+        </template>
         <div class="dataContainer flex" on-tap="handleClick">
           <div class="horizontal layout center">
             <a class="title flex">
@@ -227,6 +229,15 @@ Polymer({
   behaviors: [FormatBehavior, RoutingBehavior],
 
   properties: {
+    /**
+     * Whether to show thumbnails in list items.
+     * Can be set from parent via the show-thumbnails attribute.
+     */
+    showThumbnails: {
+      type: Boolean,
+      value: false,
+    },
+
     doc: {
       type: Object,
       notify: true,

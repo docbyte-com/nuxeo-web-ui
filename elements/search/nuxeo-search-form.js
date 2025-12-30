@@ -349,9 +349,11 @@ Polymer({
               <div tabindex$="{{tabIndex}}" class$="[[_computedClass(selected)]]">
                 <div class="list-item-box">
                   <div class="list-item-info" role="listitem" aria-selected="true">
-                    <div class="vertical layout center">
-                      <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
-                    </div>
+                    <template is="dom-if" if="[[showThumbnails]]">
+                      <div class="vertical layout center">
+                        <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
+                      </div>
+                    </template>
                     <span class="list-item-title ellipsis">[[item.title]]</span>
                   </div>
                 </div>
@@ -442,6 +444,14 @@ Polymer({
   importMeta: import.meta,
 
   properties: {
+    /**
+     * Whether to show thumbnails in search results.
+     * Can be set from parent via the show-thumbnails attribute.
+     */
+    showThumbnails: {
+      type: Boolean,
+      value: false,
+    },
     /**
      * @ignore
      * The selected saved search.

@@ -9,7 +9,7 @@ phases:
 
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 22
       java: corretto21
     commands:
       - aws s3 sync s3://dev.tools.s3.devops.docbyte.cloud/ ~/tools/

@@ -19,18 +19,25 @@ on:
         description: 'SAUCE_ACCESS_KEY'
         required: true
 
+permissions:
+  contents: read
+
 env:
   BRANCH_NAME: ${{ github.head_ref || inputs.branch || 'lts-2025' }}
 
 jobs:
   unit-test:
-    runs-on: [ self-hosted, master ]
+    runs-on:
+      group: medium-4cpu-runners  
     steps:
-      - uses: actions/checkout@v2
+      - uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: false
+      - uses: actions/checkout@v6
         with:
           ref: ${{ env.BRANCH_NAME }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v6
         with:
           registry-url: 'https://packages.nuxeo.com/repository/npm-public/'
           scope: '@nuxeo'
@@ -41,13 +48,14 @@ jobs:
 
       - name: Install
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
         run: |
           npm cache clean --force
           npm install
 
       - name: Unit tests
-        env:
-          SAUCE_USERNAME: nuxeo-web-ui
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+        # Disabling SauceLabs. Karma is not compatible with SauceLabs v4
+        # env:
+        #   SAUCE_USERNAME: nuxeo-web-ui
+        #   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
         run: npm run test

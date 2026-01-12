@@ -3,7 +3,7 @@
   "repository": "nuxeo/nuxeo-web-ui.git",
   "homepage": "http://www.nuxeo.com",
   "name": "@nuxeo/nuxeo-web-ui",
-  "version": "2025.7.0-SNAPSHOT",
+  "version": "2026.1.0-SNAPSHOT",
   "license": "Apache-2.0",
   "vendor": "Nuxeo",
   "engines": {
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@nuxeo/nuxeo-web-ui-ftest": "file:./packages/nuxeo-web-ui-ftest",
-    "@nuxeo/testing-helpers": "~2025.7.0-rc",
+    "@nuxeo/testing-helpers": "~2025.11.0-rc",
     "@open-wc/eslint-config": "^0.3.0",
     "@open-wc/karma-esm": "^2.13.21",
     "@open-wc/prettier-config": "^0.1.0",
@@ -98,6 +98,7 @@
     "win-format": "npm run format:prettier && npm run format:eslint",
     "preinstall": "cd ./packages/nuxeo-web-ui-ftest && npm install && cd ../nuxeo-designer-catalog && npm install && cd ../../plugin/a11y && npm install",
     "ftest": "node scripts/test-runner.js --report --screenshots --headless --tags='not @ignore'",
+    "ftest:headful": "node scripts/test-runner.js --report --screenshots --tags='not @ignore'",
     "ftest:dev": "node scripts/test-runner.js --nuxeoUrl=http://localhost:8080/core --url=http://localhost:${PORT:-5000}/",
     "ftest:watch": "node scripts/test-runner.js --nuxeoUrl=http://localhost:8080/core  --url=http://localhost:${PORT:-5000}/ --tags='@watch' --debug",
     "test": "karma start --coverage",
@@ -106,7 +107,7 @@
   "dependencies": {
     "@material/mwc-snackbar": "^0.26.1",
     "@nuxeo/chart-elements": "^4.0.0-nx.1",
-    "@nuxeo/moment": "^2.24.0-nx.0",
+    "@nuxeo/moment": "2.30.1-nx.1",
     "@nuxeo/nuxeo-dataviz-elements": "~2025.7.0-rc",
     "@nuxeo/nuxeo-elements": "~2025.7.0-rc",
     "@nuxeo/nuxeo-ui-elements": "~2025.7.0-rc",
@@ -182,11 +183,11 @@
     "extend": "^3.0.2",
     "fs-extra": "^10.0.0",
     "jquery": "^3.3.1",
-    "jsondiffpatch": "^0.3.11",
+    "jsondiffpatch": "^0.7.3",
     "jsplumb": "2.13.0",
     "lit-element": "^3.2.2",
     "nuxeo": "^4.0.3",
-    "select2": "~3.5.1",
+    "select2": "~4.0.13",
     "three": "^0.177.0",
     "uuid": "^3.3.2",
     "web-animations-js": "^2.3.1"

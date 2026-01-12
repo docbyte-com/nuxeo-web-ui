@@ -1,6 +1,6 @@
 /**
 @license
-©2023 Hyland Software, Inc. and its affiliates. All rights reserved.
+©2023 Hyland Software, Inc. and its affiliates. All rights reserved. 
 All Hyland product names are registered or unregistered trademarks of Hyland Software, Inc. or its affiliates.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -110,36 +110,40 @@ Polymer({
         * for more details, see: https://github.com/PolymerElements/paper-dialog/issues/44#issuecomment-172013206
         * this will only work for iOS since it's the only supporting \`-webkit-overflow-scrolling\`
         */
+
       :host {
-        --paper-header-panel-container: {
+        --app-header-background-rear-layer: {
           -webkit-overflow-scrolling: auto;
         }
       }
 
-      paper-header-panel,
-      iron-pages paper-header-panel {
-        --paper-header-panel-body: {
-          background: var(--nuxeo-page-background);
-        }
-        height: 100%;
+      /* Layout base */
+      app-drawer-layout {
+        display: flex;
+        flex-direction: row;
       }
 
-      paper-drawer-panel {
+      /* Drawer */
+      app-drawer {
         top: var(--nuxeo-app-top, 0);
         bottom: var(--nuxeo-app-bottom, 0);
         height: calc(100% - (var(--nuxeo-app-top, 0) + var(--nuxeo-app-bottom, 0)));
       }
 
-      paper-drawer-panel[narrow] {
-        --paper-drawer-panel-left-drawer-container: {
-          z-index: 100;
-        }
-        --paper-drawer-panel-right-drawer-container: {
-          z-index: 100;
-        }
-        --paper-drawer-panel-scrim: {
-          z-index: 2;
-        }
+      /* Main content */
+      app-header-layout {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--nuxeo-page-background);
+        height: 100%;
+      }
+
+      main {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
       }
 
       #menu-wrapper {
@@ -213,16 +217,23 @@ Polymer({
         order: 1;
       }
 
+      #drawer-pages {
+        width: 100%;
+      }
+
       @media (max-width: 1024px), (max-height: 700px) {
         #drawer .toggle {
           display: none;
         }
       }
 
-      /* drawer */
       #drawer {
-        overflow: auto;
-        width: 100%;
+        position: relative;
+        box-sizing: border-box;
+        height: 100%;
+        overflow: visible;
+        width: var(--app-drawer-width, 350px);
+        transition: width 0.3s ease;
       }
 
       #drawer .toggle {
@@ -232,6 +243,7 @@ Polymer({
         width: 16px;
         height: 100%;
         cursor: pointer;
+        z-index: 10;
       }
 
       :host([dir='rtl']) #drawer .toggle {
@@ -251,7 +263,7 @@ Polymer({
 
       #drawer:hover .toggle iron-icon,
       #drawer .toggle:hover iron-icon {
-        visibility: visible;
+        visibility: visible !important;
       }
 
       #drawer iron-pages {
@@ -303,6 +315,12 @@ Polymer({
         background-color: var(--nuxeo-drawer-background);
       }
 
+      #drawerToggle svg,
+      #drawerToggle g,
+      #drawerToggle path {
+        tabindex: -1;
+      }
+
       :host([dir='rtl']) #drawerToggle {
         right: 6px;
       }
@@ -343,12 +361,56 @@ Polymer({
         right: 0 !important;
         left: auto !important;
       }
+
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: lightgrey;
+        border: 1px dotted gray;
+        color: #000;
+        padding: 8px 16px;
+        z-index: 1000;
+        text-decoration: none;
+        transition: top 0.2s ease;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      .skip-link:hover {
+        outline: none;
+        text-decoration: none;
+      }
+
+      main {
+        outline: none;
+      }
+
+      main:focus-visible {
+        outline: 2px solid #0a84ff;
+        outline-offset: -3px;
+      }
+
+      /* Safari fallback */
+      main:focus {
+        outline: 2px solid #0a84ff;
+        outline-offset: -3px;
+      }
+
+      /* Hide Safari fallback outline unless keyboard tabbing */
+      main:not(.user-is-tabbing):focus {
+        outline: none;
+      }
     </style>
+    <header role="banner">
+      <a href="#mainContent" id="skipLink" class="skip-link">[[i18n('app.skiptoMainContent.message')]]</a>
 
-    <nuxeo-offline-banner message="[[i18n('app.offlineBanner.message')]]"></nuxeo-offline-banner>
+      <nuxeo-offline-banner message="[[i18n('app.offlineBanner.message')]]"></nuxeo-offline-banner>
 
-    <nuxeo-expired-session message="[[i18n('app.expiredSession.message')]]"></nuxeo-expired-session>
-
+      <nuxeo-expired-session message="[[i18n('app.expiredSession.message')]]"></nuxeo-expired-session>
+    </header>
     <nuxeo-connection id="nxcon" user="{{currentUser}}" url="{{url}}"></nuxeo-connection>
 
     <nuxeo-document id="doc" doc-id="[[docId]]" doc-path="[[docPath]]"></nuxeo-document>
@@ -365,141 +427,147 @@ Polymer({
       headers='{"fetch-document": "properties", "translate-directoryEntry": "label", "fetch-directoryEntry": "parent", "fetch-task": "targetDocumentIds,actors"}'
     ></nuxeo-resource>
 
-    <!-- app layout -->
-    <paper-drawer-panel
-      id="drawerPanel"
-      narrow="{{isNarrow}}"
-      drawer-width="[[drawerWidth]]"
-      responsive-width="720px"
-      edge-swipe-sensitivity="0"
-      right-drawer$="[[_isRTL]]"
-    >
-      <div slot="drawer" role="list">
-        <!-- logo -->
-        <div id="logo-wrapper">
-          <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
-            <img src$="[[_logo(baseUrl)]]" alt="[[i18n('accessibility.logo')]]" />
-          </a>
-        </div>
-
-        <!-- menu -->
-        <paper-listbox
-          id="menu"
-          selected="{{selectedTab}}"
-          attr-for-selected="name"
-          selected-class="selected"
-          on-iron-activate="_toggleDrawer"
-          aria-label$="[[i18n('app.drawer')]]"
-          aria-expanded="[[drawerOpened]]"
-          id="menu-wrapper"
-          on-keyup="_toggleDrawer"
+    <app-drawer-layout id="drawerPanel" fullbleed responsive-width="720px">
+      <!-- Drawer -->
+      <aside>
+        <app-drawer
+          id="drawerMenu"
+          swipe-open
+          align$="[[_drawerAlign(_isRTL)]]"
+          opened="{{drawerOpened}}"
+          hidden$="[[isDrawerHidden(isNarrow, drawerOpened)]]"
         >
-          <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>
-
-          <template is="dom-if" if="[[hasAdministrationPermissions(currentUser)]]">
-            <nuxeo-menu-icon name="administration" icon="nuxeo:admin" label="app.administration" class="settings">
-            </nuxeo-menu-icon>
-          </template>
-          <nuxeo-menu-icon
-            name="logout"
-            icon="icons:exit-to-app"
-            label="app.user.signOut"
-            link="[[_logout(url)]]"
-            class="settings"
-          >
-          </nuxeo-menu-icon>
-        </paper-listbox>
-
-        <!-- drawer -->
-        <div id="drawer">
-          <iron-pages
-            id="drawer-pages"
-            selected="[[selectedTab]]"
-            attr-for-selected="name"
-            selected-attribute="visible"
-            on-iron-items-changed="_updateSearch"
-          >
-            <nuxeo-slot name="DRAWER_PAGES" model="[[actionContext]]"></nuxeo-slot>
-
-            <template is="dom-if" if="[[hasAdministrationPermissions(currentUser)]]">
-              <div name="administration">
-                <div class="header">
-                  <h5>[[i18n('app.administration')]]</h5>
-                </div>
-                <iron-selector selected="{{selectedAdminTab}}" attr-for-selected="name">
-                  <nuxeo-slot name="ADMINISTRATION_MENU" model="[[actionContext]]"></nuxeo-slot>
-                </iron-selector>
-              </div>
-            </template>
-
-            <!-- profile drawer page removed in fork: replaced with logout button in sidebar -->
-          </iron-pages>
-
-          <div class="toggle" on-tap="_closeDrawer" hidden$="[[!drawerOpened]]">
-            <iron-icon icon="[[toggleChevronIcon]]"></iron-icon>
-          </div>
-        </div>
-      </div>
-
-      <!-- pages -->
-      <paper-header-panel slot="main" mode="seamed">
-        <iron-pages id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="visible">
-          <nuxeo-slot name="PAGES" model="[[actionContext]]"></nuxeo-slot>
-
-          <nuxeo-home name="home"></nuxeo-home>
-
-          <nuxeo-browser
-            name="browse"
-            id="browser"
-            document="[[currentDocument]]"
-            selected-tab="{{docAction}}"
-            clipboard="[[clipboard]]"
-          ></nuxeo-browser>
-
-          <nuxeo-search-page
-            name="search"
-            id="searchResults"
-            heading="searchResults.results"
-            search-form="[[searchForm]]"
-            show-saved-search-actions
-          ></nuxeo-search-page>
-
-          <nuxeo-tasks id="tasks-dashboard" name="tasks" current="[[currentTask]]"></nuxeo-tasks>
-
-          <nuxeo-admin
-            name="admin"
-            user="[[currentUser]]"
-            selected="[[selectedAdminTab]]"
-            route-params="[[routeParams]]"
-            on-error="_onError"
-          ></nuxeo-admin>
-
-          <nuxeo-profile name="profile" selected="[[selectedProfileTab]]" user="[[currentUser]]"></nuxeo-profile>
-
-          <nuxeo-themes name="themes" selected="[[selectedProfileTab]]"></nuxeo-themes>
-
-          <nuxeo-diff-page id="diff" name="diff"></nuxeo-diff-page>
-
-          <nuxeo-page name="error">
-            <div slot="header"></div>
-            <div>
-              <nuxeo-card>
-                <custom-error id="error"></custom-error>
-              </nuxeo-card>
+          <div role="list">
+            <!-- logo -->
+            <div id="logo-wrapper">
+              <a id="logo" href$="[[urlFor('home')]]" on-click="_resetTaskSelection">
+                <img src$="[[_logo(baseUrl)]]" alt="[[i18n('accessibility.logo')]]" />
+              </a>
             </div>
-          </nuxeo-page>
-        </iron-pages>
 
-        <paper-icon-button
-          id="drawerToggle"
-          icon="menu"
-          on-tap="_openDrawer"
-          hidden$="[[!isNarrow]]"
-          aria-label$="[[i18n('command.menu')]]"
-        ></paper-icon-button>
-        <!--                <nuxeo-suggester id="suggester"></nuxeo-suggester>-->
-      </paper-header-panel>
-    </paper-drawer-panel>
+            <!-- menu -->
+            <paper-listbox
+              id="menu"
+              selected="{{selectedTab}}"
+              attr-for-selected="name"
+              selected-class="selected"
+              on-iron-activate="_toggleDrawer"
+              aria-label$="[[i18n('app.drawer')]]"
+              aria-expanded="[[drawerOpened]]"
+              id="menu-wrapper"
+              on-keyup="_toggleDrawer"
+            >
+              <nuxeo-slot name="DRAWER_ITEMS" model="[[actionContext]]"></nuxeo-slot>
+              <template is="dom-if" if="[[hasAdministrationPermissions(currentUser)]]">
+                <nuxeo-menu-icon
+                  name="administration"
+                  icon="nuxeo:admin"
+                  label="app.administration"
+                  class="settings"
+                  hidden$="[[!hasAdministrationPermissions(currentUser)]]"
+                ></nuxeo-menu-icon>
+              </template>
+              <nuxeo-menu-icon
+                name="logout"
+                icon="icons:exit-to-app"
+                label="app.user.signOut"
+                link="[[_logout(url)]]"
+                class="settings"
+              ></nuxeo-menu-icon>
+            </paper-listbox>
+
+            <!-- drawer content -->
+            <div id="drawer" style="width: {{drawerWidth}}">
+              <iron-pages
+                id="drawer-pages"
+                selected="[[selectedTab]]"
+                attr-for-selected="name"
+                selected-attribute="visible"
+                on-iron-items-changed="_updateSearch"
+              >
+                <nuxeo-slot name="DRAWER_PAGES" model="[[actionContext]]"></nuxeo-slot>
+
+                <template is="dom-if" if="[[hasAdministrationPermissions(currentUser)]]">
+                  <div name="administration">
+                    <div class="header">
+                      <h5>[[i18n('app.administration')]]</h5>
+                    </div>
+                    <iron-selector selected="{{selectedAdminTab}}" attr-for-selected="name">
+                      <nuxeo-slot name="ADMINISTRATION_MENU" model="[[actionContext]]"></nuxeo-slot>
+                    </iron-selector>
+                  </div>
+                </template>
+
+                <!-- profile drawer page removed in fork: replaced with logout button in sidebar -->
+              </iron-pages>
+
+              <div class="toggle" on-tap="_closeDrawer" hidden$="[[!drawerOpened]]">
+                <iron-icon icon="[[toggleChevronIcon]]"></iron-icon>
+              </div>
+            </div>
+          </div>
+        </app-drawer>
+      </aside>
+      <!-- Main content -->
+      <app-header-layout>
+        <app-header reveals effects="waterfall">
+          <app-toolbar>
+            <paper-icon-button
+              id="drawerToggle"
+              icon="menu"
+              on-tap="_openDrawer"
+              hidden$="[[!isNarrow]]"
+              aria-label$="[[i18n('command.menu')]]"
+              tabindex="-1"
+            ></paper-icon-button>
+          </app-toolbar>
+        </app-header>
+
+        <main id="mainContent" tabindex="-1">
+          <nuxeo-suggester id="suggester" tabindex="0"></nuxeo-suggester>
+          <iron-pages id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="visible">
+            <nuxeo-slot name="PAGES" model="[[actionContext]]"></nuxeo-slot>
+
+            <nuxeo-home name="home"></nuxeo-home>
+            <nuxeo-browser
+              name="browse"
+              id="browser"
+              document="[[currentDocument]]"
+              selected-tab="{{docAction}}"
+              clipboard="[[clipboard]]"
+            ></nuxeo-browser>
+            <nuxeo-search-page
+              name="search"
+              id="searchResults"
+              heading="searchResults.results"
+              search-form="[[searchForm]]"
+              show-saved-search-actions
+            ></nuxeo-search-page>
+            <nuxeo-tasks id="tasks-dashboard" name="tasks" current="[[currentTask]]"></nuxeo-tasks>
+            <nuxeo-admin
+              name="admin"
+              user="[[currentUser]]"
+              selected="[[selectedAdminTab]]"
+              route-params="[[routeParams]]"
+              on-error="_onError"
+            ></nuxeo-admin>
+            <nuxeo-profile name="profile" selected="[[selectedProfileTab]]" user="[[currentUser]]"></nuxeo-profile>
+            <nuxeo-themes name="themes" selected="[[selectedProfileTab]]"></nuxeo-themes>
+            <nuxeo-diff-page id="diff" name="diff"></nuxeo-diff-page>
+            <nuxeo-page name="error">
+              <div slot="header"></div>
+              <div>
+                <nuxeo-card>
+                  <custom-error id="error"></custom-error>
+                </nuxeo-card>
+              </div>
+            </nuxeo-page>
+          </iron-pages>
+        </main>
+      </app-header-layout>
+    </app-drawer-layout>
+
+    <!-- new app layout ends -->
 
     <nuxeo-slot name="CUSTOM_COMPONENTS" model="[[actionContext]]"></nuxeo-slot>
 
@@ -583,6 +651,7 @@ Polymer({
     drawerOpened: {
       type: Boolean,
       value: false,
+      notify: true,
     },
 
     keyEventTarget: {
@@ -641,6 +710,11 @@ Polymer({
       reflectToAttribute: true,
       observer: '_directionChanged',
     },
+    isNarrow: {
+      type: Boolean,
+      value: false,
+      reflectToAttribute: true,
+    },
   },
 
   listeners: {
@@ -682,15 +756,33 @@ Polymer({
   observers: [
     '_computeSharedActionContext(currentUser)',
     '_updateTitle(page, i18n, currentDocument, searchForm, currentTask, selectedAdminTab)',
+    '_handleNarrowChange(isNarrow)',
   ],
 
   ready() {
+    this.logoToMenuNavigation();
+    this.skipLinkEvent();
     this._checkRtl();
-    this.$.drawerPanel.closeDrawer();
-    this.drawerWidth = this.sidebarWidth = getComputedStyle(this).getPropertyValue('--nuxeo-sidebar-width');
-    this.$.drawerPanel.$.drawer.addEventListener('transitionend', () => {
-      this.$.drawerPanel.notifyResize();
+
+    this._updateIsNarrow();
+
+    const main = this.$.mainContent;
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && main) {
+        main.classList.add('user-is-tabbing');
+      }
     });
+
+    window.addEventListener('mousedown', () => {
+      if (main) {
+        main.classList.remove('user-is-tabbing');
+      }
+    });
+
+    window.addEventListener('resize', this._updateIsNarrow.bind(this));
+
+    this.$.drawerMenu.opened = false; // close
+    this.drawerWidth = this.sidebarWidth = getComputedStyle(this).getPropertyValue('--nuxeo-sidebar-width');
 
     const { toast } = this.$;
     // HACK - by changing the position to relative, we can stack snackbars (and tweak the internal label)
@@ -718,6 +810,122 @@ Polymer({
     this.$.menu.addEventListener('keyup', (event) => {
       this._toggleDrawer(event, { detail: { selected: event.target.getAttribute('name') } });
     });
+
+    // fire resize event during drawer animation for elements that need to adapt to size changes (nuxeo-data-table etc)
+    const { drawer } = this.$;
+    drawer.addEventListener('transitionrun', () => {
+      this._resizeDuringAnimation();
+    });
+    drawer.addEventListener('transitionstart', () => {
+      this._resizeDuringAnimation();
+    });
+  },
+
+  _resizeDuringAnimation() {
+    // continuously fire resize during animation
+    if (this._resizeLoop) {
+      cancelAnimationFrame(this._resizeLoop);
+    }
+
+    const loop = () => {
+      window.dispatchEvent(new Event('resize'));
+      this._resizeLoop = requestAnimationFrame(loop);
+    };
+
+    // start loop
+    this._resizeLoop = requestAnimationFrame(loop);
+
+    // stop loop after animation completes, cleanup and do one final resize
+    const { drawer } = this.$;
+    drawer.addEventListener(
+      'transitionend',
+      () => {
+        cancelAnimationFrame(this._resizeLoop);
+        this._resizeLoop = null;
+        // one final resize to settle everything
+        window.dispatchEvent(new Event('resize'));
+      },
+      { once: true },
+    );
+  },
+
+  logoToMenuNavigation() {
+    const { logo } = this.$;
+    const { menu } = this.$;
+    logo.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const firstItem = menu.querySelector('nuxeo-menu-icon, [name]');
+        if (firstItem) {
+          firstItem.focus();
+        }
+      }
+    });
+
+    menu.addEventListener('keydown', (e) => {
+      const items = Array.from(menu.querySelectorAll('nuxeo-menu-icon, [name]')).filter(
+        (el) => !el.hasAttribute('hidden'),
+      );
+
+      if (!items.length) return;
+
+      const firstItem = items[0];
+      const lastItem = items[items.length - 1];
+      const active = e.target;
+
+      if ((e.key === 'ArrowUp' && active === firstItem) || (e.key === 'ArrowDown' && active === lastItem)) {
+        e.preventDefault();
+        logo.focus();
+      }
+    });
+  },
+
+  disconnectedCallback() {
+    window.removeEventListener('resize', this._updateIsNarrow.bind(this));
+    super.disconnectedCallback();
+  },
+
+  skipLinkEvent() {
+    const { skipLink, mainContent } = this.$;
+    let skipLinkActivated = true; // only active once after load/top
+
+    const handleFirstTab = (e) => {
+      if (skipLinkActivated && e.key === 'Tab') {
+        skipLinkActivated = false; // deactivate until page cycle resets
+        e.preventDefault();
+        skipLink.focus({ preventScroll: true });
+      }
+    };
+
+    // Activate skip link only once after load
+    const attachTabListener = () => {
+      document.addEventListener('keydown', handleFirstTab);
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachTabListener);
+    } else {
+      attachTabListener();
+    }
+
+    // Re-arm skip link when focus is cycled back to body/top
+    document.addEventListener('focusin', (e) => {
+      if (e.target === document.body || e.target === skipLink) {
+        skipLinkActivated = true;
+      }
+    });
+
+    // Helper to focus main content
+    const activateMainContent = (e) => {
+      e.preventDefault();
+      mainContent.focus();
+      mainContent.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Activate skip link with Enter, Space, or click
+    skipLink.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') activateMainContent(e);
+    });
+    skipLink.addEventListener('click', activateMainContent);
   },
 
   _checkRtl() {
@@ -727,10 +935,11 @@ Polymer({
 
   _directionChanged(isRTL) {
     if (isRTL) {
-      this.$.drawerPanel.setAttribute('right-drawer', '');
+      this.$.drawerPanel.setAttribute('align', 'end');
+
       this.toggleChevronIcon = 'icons:chevron-right';
     } else {
-      this.$.drawerPanel.removeAttribute('right-drawer');
+      this.$.drawerPanel.setAttribute('align', 'start');
       this.toggleChevronIcon = 'icons:chevron-left';
     }
   },
@@ -1068,7 +1277,9 @@ Polymer({
     }
 
     if (this._selected === selectedItemDetailSelected && this.drawerOpened) {
-      this._closeDrawer();
+      requestAnimationFrame(() => {
+        this._closeDrawer();
+      });
     } else {
       this._selected = this.selectedTab = selectedItemDetailSelected;
       this._openDrawer();
@@ -1095,10 +1306,10 @@ Polymer({
   _closeDrawer() {
     this.drawerWidth = this.sidebarWidth;
     this.drawerOpened = false;
-    this.$.drawerPanel.closeDrawer();
+    const drawerMenu = this.$ && this.$.drawerMenu;
+    drawerMenu.removeAttribute('opened');
     this.selectedTab = '';
   },
-
   _fetchTaskCount() {
     this.$.tasksProvider.fetch().then((response) => {
       this.taskCount = response.resultsCount;
@@ -1634,5 +1845,22 @@ Polymer({
    */
   _isEmpty(obj) {
     return Object.keys(obj).length === 0;
+  },
+
+  _updateIsNarrow() {
+    this.isNarrow = window.innerWidth <= 720;
+  },
+
+  isDrawerHidden(isNarrow, drawerOpened) {
+    if (isNarrow) {
+      return !drawerOpened;
+    }
+    return false;
+  },
+
+  _handleNarrowChange(isNarrow) {
+    if (isNarrow) {
+      this.drawerOpened = false;
+    }
   },
 });

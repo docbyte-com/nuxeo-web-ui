@@ -24,6 +24,10 @@ env:
   GKE_CLUSTER: jx-prod
   GKE_ZONE: us-east1-b
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   id:
     name: Remote Caller ID ${{ github.event.inputs.caller_id }}
@@ -92,7 +96,7 @@ jobs:
 
       - name: Install
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
         run: |
           npm install nuxeo-elements/core
           npm install nuxeo-elements/ui
@@ -169,7 +173,7 @@ jobs:
 
           # ensure the deployment is restarted to pull the new preview image
           kubectl rollout restart deployment ${PREVIEW_NAMESPACE}-preview --namespace ${PREVIEW_NAMESPACE}
-          
+
           echo "url=\"https://preview-${PREVIEW_NAMESPACE}.webui.dev.nuxeo.com\"" >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@0.9.0

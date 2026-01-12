@@ -8,6 +8,9 @@ on:
   # Manually trigger the workflow
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   lint:
     uses: nuxeo/nuxeo-web-ui/.github/workflows/lint.yaml@lts-2025
@@ -42,8 +45,12 @@ jobs:
 
   build:
     needs: [lint, test, a11y, ftest]
-    runs-on: [self-hosted, master]
+    runs-on:
+      group: medium-4cpu-runners
     steps:
+      - uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: false
       - uses: actions/checkout@v4.2.2
 
       - run: git config user.name "nuxeo-webui-jx-bot" && git config user.email "webui@hyland.com"
@@ -71,7 +78,7 @@ jobs:
 
       - name: Update versions
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
         run: |
           find . -type f -not -path "./node_modules/*" -regex ".*\.\(yaml\|sample\|xml\)" -exec sed -i 's/'"$PACKAGE_VERSION"'/'"$VERSION"'/g' {} \;
 
@@ -101,7 +108,7 @@ jobs:
 
       - name: Install
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
         run: |
           npm install
           pushd packages/nuxeo-web-ui-ftest
@@ -160,7 +167,7 @@ jobs:
 
       - name: Publish Web UI FTest framework
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PACKAGES_TOKEN }}
         run: |
           pushd packages/nuxeo-web-ui-ftest/
           npm publish --@nuxeo:registry=https://packages.nuxeo.com/repository/npm-public/ --tag SNAPSHOT

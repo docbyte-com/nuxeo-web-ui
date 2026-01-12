@@ -10,7 +10,11 @@ on:
     branches: ["lts-2025"]
     paths:
       - 'i18n/messages.json'
-  
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   crowdin:
     runs-on: ubuntu-latest
@@ -22,7 +26,7 @@ jobs:
           ref: lts-2025
 
       - name: Crowdin Action
-        uses: crowdin/github-action@1.5.2
+        uses: crowdin/github-action@v2.12.0
         with:
           # Disable 'git checkout "${GITHUB_REF#refs/heads/}"'
           skip_ref_checkout: true

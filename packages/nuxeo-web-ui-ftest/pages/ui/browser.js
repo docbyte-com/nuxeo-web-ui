@@ -126,23 +126,22 @@ export default class Browser extends BasePage {
 
   get rows() {
     return (async () => {
-      await driver.pause(1000);
       const currentPage = await this.currentPage;
-      const rowsTemp = await currentPage.elements('nuxeo-data-table[name="table"] nuxeo-data-table-row:not([header])');
-      return rowsTemp;
+      return currentPage.$$('nuxeo-data-table[name="table"] nuxeo-data-table-row:not([header])');
     })();
   }
 
-  async waitForChildren() {
+  async waitForChildren(minCount = 1) {
     const currentPage = await this.currentPage;
     await driver.waitUntil(
       async () => {
-        const rows = await currentPage.$$('nuxeo-data-table[name="table"] nuxeo-data-table-row');
-        return rows.length >= 1;
+        const rows = await currentPage.$$('nuxeo-data-table[name="table"] nuxeo-data-table-row:not([header])');
+        return rows.length >= minCount;
       },
       {
-        timeout: 5000,
-        timeoutMsg: `Expected at least 1 child rows to be loaded`,
+        timeout: 20000,
+        interval: 500,
+        timeoutMsg: `Expected at least ${minCount} child rows to be loaded`,
       },
     );
   }
@@ -287,20 +286,23 @@ export default class Browser extends BasePage {
     await this.waitForChildren();
     const result = await driver.waitUntil(
       async () => {
-        const rowTemp = await this.rows;
-        for (let i = 0; i < rowTemp.length; i++) {
-          const row = await rowTemp[i];
-          const ele = await row.$('nuxeo-data-table-cell a.title');
-          const eleText = await ele.getText();
-          if (eleText.trim() === title) {
-            return { index: i }; // wrap to avoid falsy 0
+        // check visible rows first
+        const rows = await this.rows;
+        for (let i = 0; i < rows.length; i++) {
+          const cell = await rows[i].$('nuxeo-data-table-cell a.title');
+          if (await cell.isExisting()) {
+            const text = (await cell.getText()).trim();
+            if (text === title) {
+              return { index: i };
+            }
           }
         }
         return false;
       },
       {
-        timeout: 5000,
-        timeoutMsg: `${title} child document not found`,
+        timeout: 20000,
+        interval: 500,
+        timeoutMsg: `${title} child document not found within 20s`,
       },
     );
     return result.index; // unwrap and return the number

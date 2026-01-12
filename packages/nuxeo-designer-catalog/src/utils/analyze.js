@@ -74,7 +74,17 @@ module.exports = (pkg, sourcePaths, libraries, pkgManagement, callback) => {
             .map((element) => {
               let elPath;
               if (element.path.indexOf(`/${componentDir}`) < 0 && element.path.startsWith('../')) {
-                elPath = pkgManagement === 'npm' ? (elPath = element.path.replace('../', '')) : element.path;
+                elPath =
+                  pkgManagement === 'npm'
+                    ? (function removeDotDotSlash(p) {
+                        let prev;
+                        do {
+                          prev = p;
+                          p = p.replace(/\.\.\//g, '');
+                        } while (p !== prev);
+                        return p;
+                      })(element.path)
+                    : element.path;
               } else {
                 elPath = element.path.replace(`/${componentDir}`, '');
               }
